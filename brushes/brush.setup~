@@ -9,9 +9,9 @@ substr_patt = cubic
 #Lattice spacing between substrate sites.  Must be a multiple of 0.1 LJ sigma.
 lat_spacing = 2.0
 temp = 1.2
-equil_steps = 5000
-sample_steps = 5000
-dump_int = 100
+equil_steps = 50000
+sample_steps = 50000
+dump_int = 1000
 tstep = 0.01
 dielectric = 1.0
 
@@ -65,8 +65,8 @@ ctr_cat_mass = 1.0
 
 #Salt particle features
 salt_conc = 0.001
-salt_cat_chg = 1.0
-salt_ani_chg = -3.0
+salt_cat_chg = 3.0
+salt_ani_chg = -1.0
 salt_cat_LJ = 0.5,1.0
 salt_ani_LJ = 0.5,1.0
 salt_ani_mass = 1.0

@@ -11,7 +11,7 @@ lat_spacing = 2.0
 temp = 1.2
 equil_steps = 5000
 sample_steps = 5000
-dump_int = 100
+dump_int = 1000
 tstep = 0.01
 dielectric = 1.0
 
