@@ -1,0 +1,77 @@
+#Total Number of Chains to be grafted onto substrate
+num_chain = 100
+#Molecular weight of chains grafted to substrate (# of monomers)
+chain_len = 20
+#Total number of substrate sites in one dimension
+substr_len = 20
+#Arrangement of substrate sites
+substr_patt = cubic
+#Lattice spacing between substrate sites.  Must be a multiple of 0.1 LJ sigma.
+lat_spacing = 2.0
+temp = 1.2
+equil_steps = 5000
+sample_steps = 5000
+dump_int = 100
+tstep = 0.01
+
+#Polymer features
+#List a pattern to be repeated over the polymer. Z = no charge, P = +1 charge, N = -1 charge.  E.g. P,N
+#if yes there will be branch points. if no it will be linear.
+branch = yes
+#creates a branch point along the backbone every "branch_rep" # of units
+branch_rep = 4
+#if yes, the branching alternates between +/- x
+branch_alt = yes
+chain_typ = P,N
+#initial distance between bond_lengths when placed.  bond_stretching coefficient
+poly_bond_len = 1.0 
+poly_bond_k = 30.0
+FENE_max_len = 1.5
+#rest theta of polymer linear angle set to 0
+poly_ang_theta_lin = 180.0
+#rest theta of polymer branch angle set to 90 degrees
+poly_ang_theta_per = 90.0
+#the bottom two parameters set to 0 leads to a flexible chain
+poly_ang_k_lin = 1.0
+poly_ang_k_per = 1.0
+# mass of positive group
+P_mass = 1.0
+# mass of negative group
+N_mass = 1.0
+# mass of neutral group
+Z_mass = 1.0
+# LJ param of pos group
+P_LJ = 0.5,1.0
+# LJ param of neg group
+N_LJ = 0.5,1.0
+# LJ param of neut group 
+Z_LJ = 0.5,1.0
+#Z charge must be 0.0
+Z_chg = 0.0
+#P charge must be 1.0
+P_chg = 1.0
+#N charge must be -1.0
+N_chg = -1.0
+
+
+#Counterion particle features
+ctr_cat_chg = 1.0
+ctr_ani_chg = -1.0
+ctr_cat_LJ = 0.5,1.0
+ctr_ani_LJ = 0.5,1.0
+ctr_ani_mass = 1.0
+ctr_cat_mass = 1.0
+
+#Salt particle features
+salt_conc = 0.0001
+salt_cat_chg = 1.0
+salt_ani_chg = -1.0
+salt_cat_LJ = 0.5,1.0
+salt_ani_LJ = 0.5,1.0
+salt_ani_mass = 1.0
+salt_cat_mass = 1.0
+
+#Substrate particle features
+S_LJ = 0.0,1.0
+S_mass = 1.0
+S_chg = 0.0

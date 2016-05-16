@@ -1,12 +1,13 @@
 import os
 import sys
 import math
+import random
 
 def setup_parser(filename):
     if os.path.isfile(filename) == False:
         print "Could not locate "+str(filename)+", exiting program..."
         sys.exit()
-    keys = ['num_chain','chain_len','substr_len','substr_patt','chain_typ','equil_steps','sample_steps','tstep','temp','lat_spacing','poly_LJ','ctr_cat_chg','ctr_ani_chg','ctr_cat_LJ','ctr_ani_LJ','salt_cat_chg','salt_ani_chg','salt_cat_LJ','salt_ani_LJ','poly_bond_len','branch','branch_rep','branch_alt','salt_conc','P_mass','N_mass','Z_mass','P_LJ','N_LJ','Z_LJ','ctr_ani_mass','ctr_cat_mass','salt_ani_mass','salt_cat_mass','S_mass','S_chg','S_LJ','Z_chg','P_chg','N_chg','poly_bond_k','poly_ang_theta_lin','poly_ang_theta_per','poly_ang_k_lin','poly_ang_k_per']
+    keys = ['num_chain','chain_len','substr_len','substr_patt','chain_typ','equil_steps','sample_steps','tstep','temp','lat_spacing','poly_LJ','ctr_cat_chg','ctr_ani_chg','ctr_cat_LJ','ctr_ani_LJ','salt_cat_chg','salt_ani_chg','salt_cat_LJ','salt_ani_LJ','poly_bond_len','branch','branch_rep','branch_alt','salt_conc','P_mass','N_mass','Z_mass','P_LJ','N_LJ','Z_LJ','ctr_ani_mass','ctr_cat_mass','salt_ani_mass','salt_cat_mass','S_mass','S_chg','S_LJ','Z_chg','P_chg','N_chg','poly_bond_k','poly_ang_theta_lin','poly_ang_theta_per','poly_ang_k_lin','poly_ang_k_per','dump_int','FENE_max_len']
     indices = list(range(len(keys)))
     hash = {k:i for k,i in zip(keys,indices)}
     input_param = range(len(keys))
@@ -131,17 +132,18 @@ def write_init(filename):
     wfile.write("units \t\t lj \n")
     wfile.write("atom_style \t\t full \n")
     wfile.write("pair_style \t\t lj/cut/coul/long 10.0 8.0 \n")
-    wfile.write("bond_style \t\t harmonic \n")
-    wfile.write("angle_style \t\t harmonic \n")
+    wfile.write("bond_style \t\t fene \n")
+    wfile.write("angle_style \t\t cosine/delta \n")
     wfile.write("boundary \t\t p p f \n")
     wfile.write("neighbor \t\t 0.5 bin \n")
     wfile.write("neigh_modify \t\t every 1 delay 3 check yes \n")
     wfile.write("kspace_style \t\t pppm   0.0001 \n")
     wfile.write("kspace_modify \t\t slab   3.0 \n")
     wfile.write("pair_modify \t\t mix arithmetic \n")
-    wfile.write("dielectric \t\t 80.0 \n\n")
+    wfile.write("dielectric \t\t 80.0 \n")
+    wfile.write("special_bonds \t\t fene \n\n")
 
-def write_settings(filename,LJ_dict,atom_type_list,lin_angle_dict,per_angle_dict,angle_coeff_dict):
+def write_settings(filename,LJ_dict,atom_type_list,lin_angle_dict,per_angle_dict,angle_coeff_dict,poly_bond_len,poly_bond_k,FENE_bond_len):
     wfile = open(filename,'w')
     wfile.write("#Non-bonded interactions (pair-wise) \n")
     for i in range(len(atom_type_list)):
@@ -153,15 +155,17 @@ def write_settings(filename,LJ_dict,atom_type_list,lin_angle_dict,per_angle_dict
             LJ_eps_ij = round(math.sqrt(LJ_eps_i*LJ_eps_j),6)
             LJ_sig_ij = round((LJ_sig_i+LJ_sig_j)/2.,6)
             wfile.write("pair_coeff "+str(i+1)+" "+str(j+1)+" "+str(LJ_eps_ij)+" "+str(LJ_sig_ij)+"\n")
-    wfile.write("\n#Harmonic Stretching Interactions \n")
-    wfile.write("#bond_coeff bondtype k R0 \n")
-    wfile.write("bond_coeff 1 10.0 1.0 \n\n")
+    wfile.write("\n#FENE Stretching Interactions \n")
+    wfile.write("#bond_coeff bondtype k R0 epsilon sigma\n")
+    wfile.write("bond_coeff 1 "+str(poly_bond_k)+" "+str(FENE_bond_len)+" 1.0 1.0\n\n")
     wfile.write("\n#Harmonic Angle Interaction \n")
     wfile.write("angle_coeff 1 "+angle_coeff_dict['lin'].split(',')[0]+" "+angle_coeff_dict['lin'].split(',')[1]+"\n")
     if len(lin_angle_dict)+len(per_angle_dict) != len(lin_angle_dict):
         wfile.write("angle_coeff 2 "+angle_coeff_dict['per'].split(',')[0]+" "+angle_coeff_dict['per'].split(',')[1]+"\n")
 
-def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len):
+def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_type_list,dump_int):
+    vel_seed1 = random.randint(1,99999999)
+    vel_seed2 = random.randint(1,99999999)
     wfile = open(filename,'w')
     wfile.write("#------------- Init Section ---------------\n\n")
     wfile.write("include "+'"'+filename[:-3]+'.init"\n')
@@ -175,9 +179,31 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len):
     wfile.write("run_style verlet\n")
     wfile.write("timestep "+str(tstep)+"\n\n")
     wfile.write("#SIMULATION BOX FIXES\n\n")
-    wfile.write("group substrates id <= "+str(2*int(substr_len)**2)+'\n')
+    wfile.write("group substrates type 1 \n")
     wfile.write("group bot_substr id <= "+str(int(substr_len)**2)+'\n')
     wfile.write("group top_substr subtract substrates bot_substr\n")
+    if "Z" in atom_type_list and "P" in atom_type_list and "N" in atom_type_list:
+        wfile.write("group polymers type 2:4\n")
+        wfile.write("group ctr_ions type 5:6\n")
+    elif "Z" in atom_type_list and "P" in atom_type_list:
+        wfile.write("group polymers type 2:3\n")
+        wfile.write("group ctr_ions type 4\n")
+    elif "Z" in atom_type_list and "N" in atom_type_list:
+        wfile.write("group polymers type 2:3\n")
+        wfile.write("group ctr_ions type 4\n")
+    elif "P" in atom_type_list and "N" in atom_type_list:
+        wfile.write("group polymers type 2:3\n")
+        wfile.write("group ctr_ions type 4:5\n")
+    elif "Z" in atom_type_list:
+        wfile.write("group polymers type 2\n")
+    elif "P" in atom_type_list:
+        wfile.write("group polymers type 2\n")
+        wfile.write("group ctr_ions type 3\n")
+    elif "N" in atom_type_list:
+        wfile.write("group polymers type 2\n")
+        wfile.write("group ctr_ions type 3\n")
+    if "a" in atom_type_list:
+        wfile.write("group salt subtract all substrates polymers ctr_ions\n")
     wfile.write("group dump_group subtract all top_substr\n")
     wfile.write("fix 1 substrates setforce 0.0 0.0 0.0\n")
     wfile.write("group not_substr subtract all substrates\n")
@@ -185,15 +211,32 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len):
     wfile.write("fix wall2 not_substr wall/lj126 zhi EDGE 1.0 1.0 2.5 \n\n")
     wfile.write("#Minimize the simulation box\n")
     wfile.write("minimize 1.0e-4 1.0e-4 2000 2000\n\n")
-    wfile.write("#Run NVT\n")
+    wfile.write("#Run NVT Equilibration\n")
+    wfile.write("velocity not_substr create "+str(temp)+" "+str(vel_seed1)+"\n")
     wfile.write("fix 10 not_substr nve\n")
-    wfile.write("velocity not_substr create 0.5 847593\n")
-    wfile.write("fix 2 not_substr langevin 0.5 1.5 100.0 986537\n")
-    wfile.write("dump 1 dump_group custom 100 test.trj id type x y z\n")
-    wfile.write("run 10000\n")
+    wfile.write("fix 2 not_substr langevin "+str(temp)+" "+str(temp)+" 100.0 986537\n")
+    wfile.write("dump 1 dump_group custom "+str(dump_int)+" equil.trj id type x y z\n")
+    wfile.write("run "+str(equil_steps)+"\n")
     wfile.write("unfix 2\n")
     wfile.write("unfix 10\n")
     wfile.write("undump 1\n\n")
+    wfile.write("#Run NVT Sampling\n")
+    wfile.write("fix 11 not_substr nve\n")
+    wfile.write("fix 3 not_substr langevin "+str(temp)+" "+str(temp)+ " 100.0 "+str(vel_seed2)+"\n")
+    wfile.write("dump 2 polymers custom "+str(dump_int)+" polymers.trj id type xu yu zu\n")
+    if "P" in atom_type_list or "N" in atom_type_list:
+        wfile.write("dump 3 ctr_ions custom "+str(dump_int)+" ctrions.trj id type x y z\n")
+    if "a" in atom_type_list or "b" in atom_type_list:
+        wfile.write("dump 4 salt custom "+str(dump_int)+" salt.trj id type x y z\n")
+    wfile.write("run "+str(sample_steps)+"\n")
+    wfile.write("unfix 3\n")
+    wfile.write("unfix 11\n")
+    wfile.write("undump 2\n\n")
+    if "P" in atom_type_list or "N" in atom_type_list:
+        wfile.write("undump 3\n")
+    if "a" in atom_type_list or "b" in atom_type_list:
+        wfile.write("undump 4\n")
+
 #    wfile.write("velocity not_substr all create 1.0 094376\n")
     
  

@@ -8,9 +8,10 @@ substr_len = 20
 substr_patt = cubic
 #Lattice spacing between substrate sites.  Must be a multiple of 0.1 LJ sigma.
 lat_spacing = 2.0
-temp = 0.5
-equil_steps = 1000000
-sample_steps = 100000
+temp = 1.2
+equil_steps = 5000
+sample_steps = 5000
+dump_int = 100
 tstep = 0.01
 
 #Polymer features
@@ -21,17 +22,18 @@ branch = yes
 branch_rep = 4
 #if yes, the branching alternates between +/- x
 branch_alt = yes
-chain_typ = P
-# rest length of all polymer harmonic bonds
+chain_typ = P,N
+#initial distance between bond_lengths when placed.  bond_stretching coefficient
 poly_bond_len = 1.0 
-poly_bond_k = 1.0
+poly_bond_k = 30.0
+FENE_max_len = 1.5
 #rest theta of polymer linear angle set to 0
 poly_ang_theta_lin = 180.0
 #rest theta of polymer branch angle set to 90 degrees
 poly_ang_theta_per = 90.0
 #the bottom two parameters set to 0 leads to a flexible chain
-poly_ang_k_lin = 1.0
-poly_ang_k_per = 1.0
+poly_ang_k_lin = 25.0
+poly_ang_k_per = 25.0
 # mass of positive group
 P_mass = 1.0
 # mass of negative group

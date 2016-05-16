@@ -16,9 +16,12 @@ timestep 0.01
 
 #SIMULATION BOX FIXES
 
-group substrates id <= 800
+group substrates type 1 
 group bot_substr id <= 400
 group top_substr subtract substrates bot_substr
+group polymers type 2:4
+group ctr_ions type 5:6
+group salt subtract all substrates polymers ctr_ions
 group dump_group subtract all top_substr
 fix 1 substrates setforce 0.0 0.0 0.0
 group not_substr subtract all substrates
@@ -28,13 +31,26 @@ fix wall2 not_substr wall/lj126 zhi EDGE 1.0 1.0 2.5
 #Minimize the simulation box
 minimize 1.0e-4 1.0e-4 2000 2000
 
-#Run NVT
+#Run NVT Equilibration
+velocity not_substr create 1.2 42049142
 fix 10 not_substr nve
-velocity not_substr create 0.5 847593
-fix 2 not_substr langevin 0.5 1.5 100.0 986537
-dump 1 dump_group custom 100 test.trj id type x y z
-run 10000
+fix 2 not_substr langevin 1.2 1.2 100.0 986537
+dump 1 dump_group custom 100 equil.trj id type x y z
+run 5000
 unfix 2
 unfix 10
 undump 1
 
+#Run NVT Sampling
+fix 11 not_substr nve
+fix 3 not_substr langevin 1.2 1.2 100.0 8512018
+dump 2 polymers custom 100 polymers.trj id type xu yu zu
+dump 3 ctr_ions custom 100 ctrions.trj id type x y z
+dump 4 salt custom 100 salt.trj id type x y z
+run 5000
+unfix 3
+unfix 11
+undump 2
+
+undump 3
+undump 4
