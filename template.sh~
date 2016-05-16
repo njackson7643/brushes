@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#SBATCH --job-name=lamella
+#SBATCH --output=lamela.out
+#SBATCH --error=lamella.err
+#SBATCH --time=24:00:00
+#SBATCH --partition=depablo
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=16
+
+module load lammps/10Aug2015+intelmpi-5.0+intel-15.0
+
+export OMP_NUM_THREADS = 16
+
+mpirun lmp_intelmpi < min.in
+

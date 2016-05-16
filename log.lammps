@@ -1,0 +1,153 @@
+LAMMPS (10 Feb 2015)
+#------------- Init Section ---------------
+
+include "brush.init"
+units 		 lj
+atom_style 		 full
+pair_style 		 lj/cut/coul/long 10.0 8.0
+bond_style 		 harmonic
+angle_style 		 harmonic
+boundary 		 p p f
+neighbor 		 0.5 bin
+neigh_modify 		 every 1 delay 3 check yes
+kspace_style 		 pppm   0.0001
+kspace_modify 		 slab   3.0
+pair_modify 		 mix arithmetic
+dielectric 		 80.0
+
+#------------- Particle Definitions ------------
+
+read_data "brush.data"
+  orthogonal box = (0 0 0) to (40 40 42)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  3812 atoms
+  scanning bonds ...
+  2 = max bonds/atom
+  scanning angles ...
+  3 = max angles/atom
+  reading bonds ...
+  2500 bonds
+  reading angles ...
+  2700 angles
+  3 = max # of 1-2 neighbors
+  3 = max # of 1-3 neighbors
+  6 = max # of 1-4 neighbors
+  8 = max # of special neighbors
+#------------- Settings Section -----------
+
+include "brush.settings"
+#Non-bonded interactions (pair-wise)
+pair_coeff 1 1 0.0 1.0
+pair_coeff 1 2 0.0 1.0
+pair_coeff 1 3 0.0 1.0
+pair_coeff 1 4 0.0 1.0
+pair_coeff 1 5 0.0 1.0
+pair_coeff 1 6 0.0 1.0
+pair_coeff 2 2 0.5 1.0
+pair_coeff 2 3 0.5 1.0
+pair_coeff 2 4 0.5 1.0
+pair_coeff 2 5 0.5 1.0
+pair_coeff 2 6 0.5 1.0
+pair_coeff 3 3 0.5 1.0
+pair_coeff 3 4 0.5 1.0
+pair_coeff 3 5 0.5 1.0
+pair_coeff 3 6 0.5 1.0
+pair_coeff 4 4 0.5 1.0
+pair_coeff 4 5 0.5 1.0
+pair_coeff 4 6 0.5 1.0
+pair_coeff 5 5 0.5 1.0
+pair_coeff 5 6 0.5 1.0
+pair_coeff 6 6 0.5 1.0
+
+#Harmonic Stretching Interactions
+#bond_coeff bondtype k R0
+bond_coeff 1 10.0 1.0
+
+
+#Harmonic Angle Interaction
+angle_coeff 1 1.0 180.0
+angle_coeff 2 1.0 90.0
+#------------- Run Section -----------
+
+thermo 100
+thermo_style custom step dt temp press vol etotal ke pe ebond eangle evdwl ecoul elong
+run_style verlet
+timestep 0.01
+
+#SIMULATION BOX FIXES
+
+group substrates id <= 800
+800 atoms in group substrates
+group bot_substr id <= 400
+400 atoms in group bot_substr
+group top_substr subtract substrates bot_substr
+400 atoms in group top_substr
+group dump_group subtract all top_substr
+3412 atoms in group dump_group
+fix 1 substrates setforce 0.0 0.0 0.0
+group not_substr subtract all substrates
+3012 atoms in group not_substr
+fix wall1 not_substr wall/lj126 zlo EDGE 1.0 1.0 2.5
+fix wall2 not_substr wall/lj126 zhi EDGE 1.0 1.0 2.5
+
+#Minimize the simulation box
+minimize 1.0e-4 1.0e-4 2000 2000
+WARNING: Resetting reneighboring criteria during minimization (../min.cpp:168)
+PPPM initialization ...
+  G vector (1/distance) = 0.197377
+  grid = 8 8 24
+  stencil order = 5
+  estimated absolute RMS force accuracy = 7.15583e-05
+  estimated relative force accuracy = 7.15583e-05
+  using double precision FFTs
+  3d grid and FFT values/proc = 4394 1536
+Neighbor list info ...
+  1 neighbor list requests
+  update every 1 steps, delay 0 steps, check yes
+  master list distance cutoff = 10.5
+Memory usage per processor = 8.67081 Mbytes
+Step Dt Temp Press Volume TotEng KinEng PotEng E_bond E_angle E_vdwl E_coul E_long 
+       0         0.01            0    8.9730805        67200    39.134556            0    39.134556            0            0    39.126371 2.8993353e-05 0.0081558846 
+     100         0.01            0 -0.0025177999        67200  -0.10308754            0  -0.10308754 0.0029394992 0.0022516766  -0.11626548 -1.6343582e-05 0.0080031077 
+     200         0.01            0 -0.0028376281        67200  -0.12990036            0  -0.12990036 0.0031799955 0.0033424976  -0.14428139 -1.5518868e-05 0.0078740604 
+     300         0.01            0 -0.0033374824        67200  -0.15396389            0  -0.15396389  0.003589338 0.0045847028  -0.16994432 1.147293e-05  0.007794918 
+     400         0.01            0 -0.0045928954        67200  -0.21402253            0  -0.21402253 0.0056768987 0.0094239172  -0.23688311 4.2124998e-05 0.0077176304 
+     500         0.01            0 -0.005581608        67200  -0.29159104            0  -0.29159104 0.0075023109   0.01288241  -0.31972094 7.2082082e-05  0.007673098 
+     600         0.01            0 -0.006002034        67200  -0.36183103            0  -0.36183103 0.0089966956  0.017025636  -0.39565509 0.00010415701 0.0076975711 
+     700         0.01            0 -0.0066274221        67200  -0.44144994            0  -0.44144994  0.011905365  0.025214082  -0.48640633 0.00011619485 0.0077207482 
+     800         0.01            0 -0.0077182092        67200  -0.52703111            0  -0.52703111  0.016070746  0.034135999  -0.58515356 0.00014819872  0.007767503 
+     900         0.01            0 -0.0077036602        67200  -0.61260198            0  -0.61260198  0.019360944  0.043008784  -0.68298866 0.00019535055 0.0078215981 
+    1000         0.01            0 -0.0080016873        67200  -0.68816509            0  -0.68816509   0.02338938  0.050945519   -0.7706066 0.00022775759 0.0078788567 
+    1040         0.01            0 -0.0085126249        67200  -0.70958487            0  -0.70958487   0.02543616   0.05470192  -0.79785866 0.00023133208 0.0079043836 
+Loop time of 50.9634 on 1 procs for 1040 steps with 3812 atoms
+
+Minimization stats:
+  Stopping criterion = max force evaluations
+  Energy initial, next-to-last, final = 
+         39.1345557685    -0.708826481293    -0.709584866857
+  Force two-norm initial, final = 1.10363e+06 29.4642
+  Force max component initial, final = 195074 9.1645
+  Final line search alpha, max atom move = 0.00780465 0.0715257
+  Iterations, force evaluations = 1040 2000
+
+Pair  time (%) = 40.7743 (80.0071)
+Bond  time (%) = 0.752481 (1.47651)
+Kspce time (%) = 4.53794 (8.90432)
+Neigh time (%) = 4.4879 (8.80612)
+Comm  time (%) = 0.127289 (0.249766)
+Outpt time (%) = 0.000420094 (0.000824304)
+Other time (%) = 0.283026 (0.555351)
+
+Nlocal:    3812 ave 3812 max 3812 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    5330 ave 5330 max 5330 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    635093 ave 635093 max 635093 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 635093
+Ave neighs/atom = 166.604
+Ave special neighs/atom = 4.19727
+Neighbor list builds = 227
+Dangerous builds = 0

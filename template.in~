@@ -1,0 +1,8 @@
+#This file creates an input file for simulating polymer brushes in LAMMPS
+
+include "init_file"
+
+read_data "data_file"
+
+include "settings_file"
+
