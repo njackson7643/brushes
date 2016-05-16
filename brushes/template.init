@@ -1,0 +1,11 @@
+units		lj	#LJ unit style
+atom_style	full	#select column format for Atoms section
+pair_style	lj/cut/coul/long 10.0 8.0     #cutoffLJ	cutoff_coulomb
+bond_style 	harmonic	 #harmonic bond types
+boundary 	p p f		 #boundary conditions for the cell
+neighbor 	0.5 bin 	  	     #criteria for building neighbor lists
+neigh_modify every 1 delay 3 check yes	       #criteria for updating neigh list
+kspace_style	pppm	0.0001	#long-range electrostatics method
+kspace_modify  	slab 	3.0            #Use the 2d slab arrangement for the pppm solver
+pair_modify	mix arithmetic	#using Lorenz-Berthelot mixing rules
+dielectric	1.0             # Bjerrum length = 1/dielectric in reduced CG units

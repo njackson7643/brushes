@@ -1,0 +1,40 @@
+#------------- Init Section ---------------
+
+include "brush.init"
+#------------- Particle Definitions ------------ 
+
+read_data "brush.data"
+#------------- Settings Section ----------- 
+
+include "brush.settings"
+#------------- Run Section ----------- 
+
+thermo 100
+thermo_style custom step dt temp press vol etotal ke pe ebond eangle evdwl ecoul elong
+run_style verlet
+timestep 0.01
+
+#SIMULATION BOX FIXES
+
+group substrates id <= 800
+group bot_substr id <= 400
+group top_substr subtract substrates bot_substr
+group dump_group subtract all top_substr
+fix 1 substrates setforce 0.0 0.0 0.0
+group not_substr subtract all substrates
+fix wall1 not_substr wall/lj126 zlo EDGE 1.0 1.0 2.5 
+fix wall2 not_substr wall/lj126 zhi EDGE 1.0 1.0 2.5 
+
+#Minimize the simulation box
+minimize 1.0e-4 1.0e-4 2000 2000
+
+#Run NVT
+fix 10 not_substr nve
+velocity not_substr create 0.5 847593
+fix 2 not_substr langevin 0.5 1.5 100.0 986537
+dump 1 dump_group custom 100 test.trj id type x y z
+run 10000
+unfix 2
+unfix 10
+undump 1
+

@@ -1,0 +1,19 @@
+#This file creates an input file for simulating polymer brushes in LAMMPS
+
+include "init_file"
+
+read_data "data_file"
+
+include "settings_file"
+
+#------------------- Run Section --------------------
+
+timestep ***
+thermo ***
+thermo_style custom step temp press density vol etotal enthalpy ke pe ebond eangle evdwl ecoul elong
+neigh_modify delay 0 every 1 check yes page 1000000 one 10000
+run_style verlet
+
+#Relaxation of Brush
+
+#Brush Sampling
