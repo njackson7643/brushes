@@ -330,7 +330,7 @@ def bond_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,si
                     continue
     return bond_dict,bond_count
 
-def angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size):
+def angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,side_bond_size):
     angle_count = 1
     lin_angle_dict = {}
     per_angle_dict = {}
@@ -354,30 +354,30 @@ def angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size):
                     k_m_type = ''
                     k_p_num = ''
                     k_p_type = ''
-                    if i < bond_size:
-                        i_m = Lx-bond_size-i 
-                        i_p = i+bond_size
-                    elif i > Lx-bond_size-1:
-                        i_m = i-bond_size
-                        i_p = i+bond_size-Lx
+                    if i < side_bond_size:
+                        i_m = Lx-side_bond_size-i 
+                        i_p = i+side_bond_size
+                    elif i > Lx-side_bond_size-1:
+                        i_m = i-side_bond_size
+                        i_p = i+side_bond_size-Lx
                     else:
-                        i_m = i-bond_size
-                        i_p = i+bond_size
+                        i_m = i-side_bond_size
+                        i_p = i+side_bond_size
                     if str(i_m)+','+str(j)+','+str(k) in inv_tot_atom_dict:
                         i_m_num = inv_tot_atom_dict[str(i_m)+','+str(j)+','+str(k)]
                         i_m_type = sim_grid[i_m,j,k]
                     if str(i_p)+','+str(j)+','+str(k) in inv_tot_atom_dict:
                         i_p_num = inv_tot_atom_dict[str(i_p)+','+str(j)+','+str(k)]
                         i_p_type = sim_grid[i_p,j,k]
-                    if j < bond_size:
-                        j_m = Ly-bond_size-j 
-                        j_p = j+bond_size
-                    elif j > Ly-bond_size-1:
-                        j_m = j-bond_size
-                        j_p = j+bond_size-Ly
+                    if j < side_bond_size:
+                        j_m = Ly-side_bond_size-j 
+                        j_p = j+side_bond_size
+                    elif j > Ly-side_bond_size-1:
+                        j_m = j-side_bond_size
+                        j_p = j+side_bond_size-Ly
                     else:
-                        j_m = j-bond_size
-                        j_p = j+bond_size
+                        j_m = j-side_bond_size
+                        j_p = j+side_bond_size
                     if str(i)+','+str(j_m)+','+str(k) in inv_tot_atom_dict:
                         j_m_num = inv_tot_atom_dict[str(i)+','+str(j_m)+','+str(k)]
                         j_m_type = sim_grid[i,j_m,k]

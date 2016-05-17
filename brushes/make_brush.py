@@ -313,7 +313,7 @@ for i in range(1,len(bond_dict)+1,1):
 
 #create new dictionary that contains all angles in the system
 angle_count = 1
-lin_angle_dict,per_angle_dict,angle_count = angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,side_bond_size)
+lin_angle_dict,per_angle_dict,angle_count = angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,side_bond_size)
 
 
 angle_dict = merge_two_dicts(lin_angle_dict,per_angle_dict)
@@ -395,8 +395,8 @@ for i in range(1,len(rev_bond_dict)+1,1):
     ax.plot([x1,x2],[y1,y2],[z1,z2],linewidth=line_thick,c='black')
 
 ax.view_init(elev=0.,azim=45)
-ax.set_xlim3d(0,Lx*grid_disc/8)
-ax.set_ylim3d(0,Lx*grid_disc/8)
+ax.set_xlim3d(0,Lx*grid_disc/2)
+ax.set_ylim3d(0,Lx*grid_disc/2)
 ax.set_zlim3d(0,top_bound*grid_disc)
 plt.show()
 
