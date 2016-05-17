@@ -85,7 +85,7 @@ N_count = 0
 P_count = 0
 Z_count = 0
 #Don't mess with bond_scale
-bond_scale = 1
+bond_scale = 2
 side_bond_size = bond_size/bond_scale
 
 
@@ -296,7 +296,7 @@ PN_count = 0
 #Create new dictionary that contains all neighbors to which it is bonded
 bond_count = 1
 
-bond_dict,bond_count = bond_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,side_bond_size)
+bond_dict,bond_count = bond_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,side_bond_size)
 
 #Remove redundant bond definitions
 rev_bond_dict = {}
@@ -350,7 +350,7 @@ print "Total atoms \t "+str(S_count+Z_count+P_count+N_count+p_count+n_count+a_co
 
 #PLOT THE ENTIRE SIMULATION BOX
 #poly_size, ctr_size, and salt_size are all specification for the size of the plotted points below.
-"""
+
 poly_size = 20
 ctr_size = 5
 salt_size = 30
@@ -395,11 +395,11 @@ for i in range(1,len(rev_bond_dict)+1,1):
     ax.plot([x1,x2],[y1,y2],[z1,z2],linewidth=line_thick,c='black')
 
 ax.view_init(elev=0.,azim=45)
-ax.set_xlim3d(0,Lx*grid_disc/2)
-ax.set_ylim3d(0,Lx*grid_disc/2)
+ax.set_xlim3d(0,Lx*grid_disc/8)
+ax.set_ylim3d(0,Lx*grid_disc/8)
 ax.set_zlim3d(0,top_bound*grid_disc)
 plt.show()
-"""
+
 num_atom = S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count
 
 #Actually write the .data file

@@ -1,7 +1,7 @@
 #Total Number of Chains to be grafted onto substrate
 num_chain = 100
 #Molecular weight of chains grafted to substrate (# of monomers)
-chain_len = 20
+chain_len = 6
 #Total number of substrate sites in one dimension
 substr_len = 20
 #Arrangement of substrate sites
@@ -18,7 +18,7 @@ dielectric = 1.0
 #Polymer features
 #List a pattern to be repeated over the polymer. Z = no charge, P = +1 charge, N = -1 charge.  E.g. P,N
 #if yes there will be branch points. if no it will be linear.
-branch = no
+branch = yes
 #creates a branch point along the backbone every "branch_rep" # of units
 branch_rep = 4
 #if yes, the branching alternates between +/- x

@@ -33,7 +33,7 @@ dielectric 		 1.0
 minimize 1.0e-4 1.0e-4 2000 2000
 
 #Run NVT Equilibration
-velocity not_substr create 1.2 62637333
+velocity not_substr create 1.2 12843067
 fix 10 not_substr nve
 fix 2 not_substr langevin 1.2 1.2 100.0 986537
 dump 1 dump_group custom 1000 equil.trj id type x y z
@@ -45,7 +45,7 @@ undump 1
 #Run NVT Sampling
 dielectric 		 1.0 
 fix 11 not_substr nve
-fix 3 not_substr langevin 1.2 1.2 100.0 9347489
+fix 3 not_substr langevin 1.2 1.2 100.0 3515799
 dump 2 polymers custom 1000 polymers.trj id type q xu yu zu
 dump 3 ctr_ions custom 1000 ctrions.trj id type q x y z
 dump 4 salt custom 1000 salt.trj id type q x y z
