@@ -131,15 +131,16 @@ def write_init(filename):
     wfile = open(filename,'w')
     wfile.write("units \t\t lj \n")
     wfile.write("atom_style \t\t full \n")
-    wfile.write("pair_style \t\t lj/cut/coul/long 4.0 10.0 \n")
+#Set short range LJ cutoff to 2.5 and use shift.  Electrostatics cutoff set to > 2x LJ cutoff
+    wfile.write("pair_style \t\t lj/cut/coul/long 2.5 6.0 \n")
+    wfile.write("pair_modify \t\t shift yes mix arithmetic \n")
     wfile.write("bond_style \t\t fene \n")
     wfile.write("angle_style \t\t cosine/delta \n")
     wfile.write("boundary \t\t p p f \n")
     wfile.write("neighbor \t\t 0.5 bin \n")
-    wfile.write("neigh_modify \t\t every 1 delay 3 check yes \n")
+    wfile.write("neigh_modify \t\t every 1 delay 3 check yes one 10000 \n")
     wfile.write("kspace_style \t\t pppm   0.0001 \n")
     wfile.write("kspace_modify \t\t slab   3.0 \n")
-    wfile.write("pair_modify \t\t mix arithmetic \n")
     wfile.write("special_bonds \t\t fene \n\n")
 
 def write_settings(filename,LJ_dict,atom_type_list,lin_angle_dict,per_angle_dict,angle_coeff_dict,poly_bond_len,poly_bond_k,FENE_bond_len):
@@ -221,6 +222,7 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("unfix 10\n")
     wfile.write("undump 1\n\n")
     wfile.write("#Run NVT Sampling\n")
+    wfile.write("velocity not_substr scale 1.2\n")
     wfile.write("dielectric \t\t "+str(dielectric)+" \n")
     wfile.write("fix 11 not_substr nve\n")
     wfile.write("fix 3 not_substr langevin "+str(temp)+" "+str(temp)+ " 100.0 "+str(vel_seed2)+"\n")

@@ -394,7 +394,7 @@ for i in range(1,len(rev_bond_dict)+1,1):
     z2 = grid_disc*float(xyz_2[2])
     ax.plot([x1,x2],[y1,y2],[z1,z2],linewidth=line_thick,c='black')
 
-ax.view_init(elev=0.,azim=90)
+ax.view_init(elev=0.,azim=45)
 ax.set_xlim3d(0,Lx*grid_disc/2)
 ax.set_ylim3d(0,Lx*grid_disc/2)
 ax.set_zlim3d(0,top_bound*grid_disc)
