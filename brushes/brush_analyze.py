@@ -75,8 +75,8 @@ plt.plot(z_dist,z_arr,color='black',linewidth=2)
 plt.ylim(zmin,zmax/2)
 plt.xlim(0,max(z_dist))
 plt.title('Polymer monomer density distribution',fontsize=12)
-plt.xlabel('z-axis')
-plt.ylabel('Probability')
+plt.ylabel('z-axis')
+plt.xlabel('Probability')
 
 #Plot side-view of polymer density
 plt.subplot(222)
@@ -146,8 +146,8 @@ for i in range(len(z_mean_arr)):
         plt.ylim(zmin,zmax)
         plt.xlim(0,max(z_dist_arr[i]))
     plt.title('Counter ion density distribution',fontsize=12)
-    plt.xlabel('z-axis')
-    plt.ylabel('Probability')
+    plt.ylabel('z-axis')
+    plt.xlabel('Probability')
     plt.legend()
 
 #Analyze Salt Distribution 
@@ -221,8 +221,8 @@ for i in range(len(z_mean_arr)):
         plt.ylim(zmin,zmax)
         plt.xlim(0,max(z_dist_arr[i]))
     plt.title('Salt ion density distribution',fontsize=12)
-    plt.xlabel('z-axis')
-    plt.ylabel('Probability')
+    plt.ylabel('z-axis')
+    plt.xlabel('Probability')
     plt.legend()
 
 #plt.tight_layout()

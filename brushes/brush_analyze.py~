@@ -36,7 +36,6 @@ with open(polymer_file,'r') as f:
             xpos = int(round_partial(float(templine[3]),grid_size)/grid_size)
             ypos = int(round_partial(float(templine[4]),grid_size)/grid_size)
             zpos = int(round_partial(float(templine[5]),grid_size)/grid_size)
-            print xpos,ypos,zpos
             poly_grid[xpos-1,ypos-1,zpos-1] += 1
         else:
             continue
@@ -206,7 +205,6 @@ z_dist_arr[3] = np.insert(z_dist_arr[3],0.0,0)
 z_mean_arr = []
 
 for i in range(4):
-    print sum(z_dist_arr[i])
     if sum(z_dist_arr[i]) > 0.0:
         z_dist_arr[i] = z_dist_arr[i]/(sum(z_dist_arr[i]))
         z_mean_arr.append(np.dot(z_dist_arr[i],z_arr)/sum(z_dist_arr[i]))
