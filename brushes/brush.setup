@@ -1,7 +1,7 @@
 #Total Number of Chains to be grafted onto substrate
 num_chain = 25
 #Molecular weight of chains grafted to substrate (# of monomers)
-chain_len = 30
+chain_len = 10
 #Total number of substrate sites in one dimension
 substr_len = 10
 #Arrangement of substrate sites
