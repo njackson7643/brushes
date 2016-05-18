@@ -7,7 +7,7 @@ def setup_parser(filename):
     if os.path.isfile(filename) == False:
         print "Could not locate "+str(filename)+", exiting program..."
         sys.exit()
-    keys = ['num_chain','chain_len','substr_len','substr_patt','chain_typ','equil_steps','sample_steps','tstep','temp','lat_spacing','poly_LJ','ctr_cat_chg','ctr_ani_chg','ctr_cat_LJ','ctr_ani_LJ','salt_cat_chg','salt_ani_chg','salt_cat_LJ','salt_ani_LJ','poly_bond_len','branch','branch_rep','branch_alt','salt_conc','P_mass','N_mass','Z_mass','P_LJ','N_LJ','Z_LJ','ctr_ani_mass','ctr_cat_mass','salt_ani_mass','salt_cat_mass','S_mass','S_chg','S_LJ','Z_chg','P_chg','N_chg','poly_bond_k','poly_ang_theta_lin','poly_ang_theta_per','poly_ang_k_lin','poly_ang_k_per','dump_int','FENE_max_len','dielectric']
+    keys = ['num_chain','chain_len','substr_len','substr_patt','chain_typ','equil_steps','sample_steps','tstep','temp','lat_spacing','poly_LJ','ctr_cat_chg','ctr_ani_chg','ctr_cat_LJ','ctr_ani_LJ','salt_cat_chg_1','salt_ani_chg_1','salt_cat_LJ_1','salt_ani_LJ_1','poly_bond_len','branch','branch_rep','branch_alt','salt_conc_1','P_mass','N_mass','Z_mass','P_LJ','N_LJ','Z_LJ','ctr_ani_mass','ctr_cat_mass','salt_ani_mass_1','salt_cat_mass_1','S_mass','S_chg','S_LJ','Z_chg','P_chg','N_chg','poly_bond_k','poly_ang_theta_lin','poly_ang_theta_per','poly_ang_k_lin','poly_ang_k_per','dump_int','FENE_max_len','dielectric','salt_conc_2','salt_cat_chg_2','salt_ani_chg_2','salt_cat_LJ_2','salt_ani_LJ_2','salt_cat_mass_2','salt_ani_mass_2']
     indices = list(range(len(keys)))
     hash = {k:i for k,i in zip(keys,indices)}
     input_param = range(len(keys))
@@ -28,7 +28,7 @@ def setup_parser(filename):
     #return a hashed table with the input parameters and the read-in values
     return {k:v for k,v in zip(keys,input_param)}
 
-def write_data(filename,num_atom,num_bond,num_ang,num_dih,num_imp,sim_grid,num_atom_type,num_bond_type,num_ang_type,num_dih_type,num_imp_type,Lx,Ly,top_bound,S_dict,Z_dict,P_dict,N_dict,p_dict,n_dict,a_dict,b_dict,S_count,Z_count,P_count,N_count,p_count,n_count,a_count,b_count,atom_type_list,chg_dict,LJ_dict,m_dict,grid_disc,rev_bond_dict,lin_angle_dict,per_angle_dict,angle_coeff_dict):
+def write_data(filename,num_atom,num_bond,num_ang,num_dih,num_imp,sim_grid,num_atom_type,num_bond_type,num_ang_type,num_dih_type,num_imp_type,Lx,Ly,top_bound,S_dict,Z_dict,P_dict,N_dict,p_dict,n_dict,a_dict,b_dict,c_dict,d_dict,S_count,Z_count,P_count,N_count,p_count,n_count,a_count,b_count,c_count,d_count,atom_type_list,chg_dict,LJ_dict,m_dict,grid_disc,rev_bond_dict,lin_angle_dict,per_angle_dict,angle_coeff_dict):
     wfile = open(filename,'w')
     wfile.write("LAMMPS Description\n\n")
     wfile.write("\t "+str(num_atom)+" atoms\n")
@@ -110,6 +110,20 @@ def write_data(filename,num_atom,num_bond,num_ang,num_dih,num_imp,sim_grid,num_a
         for i in range(1,b_count+1,1):
             curr = b_dict[i].split(',')
             wfile.write(str(i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count)+" "+str(mol_count)+" "+str(typ_count+1)+"\t"+str(chg_dict[atom_type_list[typ_count]])+"\t"+str(float(curr[0])*grid_disc)+"\t"+str(float(curr[1])*grid_disc)+"\t"+str(float(curr[2])*grid_disc)+"\n")
+#Write c atoms
+    if c_count > 0:
+        mol_count += 1
+        typ_count += 1
+        for i in range(1,c_count+1,1):
+            curr = c_dict[i].split(',')
+            wfile.write(str(i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count)+" "+str(mol_count)+" "+str(typ_count+1)+"\t"+str(chg_dict[atom_type_list[typ_count]])+"\t"+str(float(curr[0])*grid_disc)+"\t"+str(float(curr[1])*grid_disc)+"\t"+str(float(curr[2])*grid_disc)+"\n")
+#Write d atoms
+    if d_count > 0:
+        mol_count += 1
+        typ_count += 1
+        for i in range(1,d_count+1,1):
+            curr = d_dict[i].split(',')
+            wfile.write(str(i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count+c_count)+" "+str(mol_count)+" "+str(typ_count+1)+"\t"+str(chg_dict[atom_type_list[typ_count]])+"\t"+str(float(curr[0])*grid_disc)+"\t"+str(float(curr[1])*grid_disc)+"\t"+str(float(curr[2])*grid_disc)+"\n")
 #Write BONDS section
     wfile.write("\n")
     wfile.write("Bonds\n\n")
@@ -129,7 +143,7 @@ def write_data(filename,num_atom,num_bond,num_ang,num_dih,num_imp,sim_grid,num_a
         
 def write_init(filename):
     wfile = open(filename,'w')
-    wfile.write("units \t\t lj \n")
+    wfile.write("units \t\t\t lj \n")
     wfile.write("atom_style \t\t full \n")
 #Set short range LJ cutoff to 2.5 and use shift.  Electrostatics cutoff set to > 2x LJ cutoff
     wfile.write("pair_style \t\t lj/cut/coul/long 2.5 6.0 \n")
@@ -202,7 +216,7 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     elif "N" in atom_type_list:
         wfile.write("group polymers type 2\n")
         wfile.write("group ctr_ions type 3\n")
-    if "a" in atom_type_list:
+    if "a" in atom_type_list or "b" in atom_type_list:
         wfile.write("group salt subtract all substrates polymers ctr_ions\n")
     wfile.write("group dump_group subtract all top_substr\n")
     wfile.write("fix 1 substrates setforce 0.0 0.0 0.0\n")
@@ -210,7 +224,6 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("fix wall1 not_substr wall/lj126 zlo EDGE 1.0 1.0 2.5 \n")
     wfile.write("fix wall2 not_substr wall/lj126 zhi EDGE 1.0 1.0 2.5 \n\n")
     wfile.write("#Minimize the simulation box. \n")
-    wfile.write("dielectric \t\t 1.0\n")
     wfile.write("minimize 1.0e-4 1.0e-4 2000 2000\n\n")
     wfile.write("#Run NVT Equilibration\n")
     wfile.write("velocity not_substr create "+str(temp)+" "+str(vel_seed1)+"\n")

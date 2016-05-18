@@ -183,36 +183,54 @@ elif branch_choice == 'yes':
 
 #PLACE SALT RANDOMLY INTO THE EMPTY SPACES OF THE SIMULATION GRID
 
-salt_ani_chg = float(input_param['salt_ani_chg'])
-salt_cat_chg = float(input_param['salt_cat_chg'])
-salt_conc = float(input_param['salt_conc'])
-salt_pairs = int(salt_conc*Lx*Ly*top_bound*(grid_disc**3))
-cat_ani_ratio = abs(salt_cat_chg/salt_ani_chg)
-tot_salt_ani = salt_pairs
-tot_salt_cat = salt_pairs
+salt_ani_chg_1 = float(input_param['salt_ani_chg_1'])
+salt_cat_chg_1 = float(input_param['salt_cat_chg_1'])
+salt_conc_1 = float(input_param['salt_conc_1'])
+salt_pairs_1 = int(salt_conc_1*Lx*Ly*top_bound*(grid_disc**3))
+cat_ani_ratio_1 = abs(salt_cat_chg_1/salt_ani_chg_1)
+tot_salt_ani_1 = salt_pairs_1
+tot_salt_cat_1 = salt_pairs_1
 
+salt_ani_chg_2 = float(input_param['salt_ani_chg_2'])
+salt_cat_chg_2 = float(input_param['salt_cat_chg_2'])
+salt_conc_2 = float(input_param['salt_conc_2'])
+salt_pairs_2 = int(salt_conc_2*Lx*Ly*top_bound*(grid_disc**3))
+cat_ani_ratio_2 = abs(salt_cat_chg_2/salt_ani_chg_2)
+tot_salt_ani_2 = salt_pairs_2
+tot_salt_cat_2 = salt_pairs_2
 
-if cat_ani_ratio < 1.0:
-    tot_salt_cat = int(salt_pairs/cat_ani_ratio)
-elif cat_ani_ratio > 1.0:
-    tot_salt_ani = int(salt_pairs*cat_ani_ratio)
+if cat_ani_ratio_1 < 1.0:
+    tot_salt_cat_1 = int(salt_pairs_1/cat_ani_ratio_1)
+elif cat_ani_ratio_1 > 1.0:
+    tot_salt_ani_1 = int(salt_pairs_1*cat_ani_ratio_1)
 
-print "The system has been specific to run at a salt concentration of "+str(salt_conc)+"LJ sigma^-3."
+if cat_ani_ratio_2 < 1.0:
+    tot_salt_cat_2 = int(salt_pairs_2/cat_ani_ratio_2)
+elif cat_ani_ratio_2 > 1.0:
+    tot_salt_ani_2 = int(salt_pairs_2*cat_ani_ratio_2)
+
+print "The system has been specific to run at a salt concentration of "+str(salt_conc_1)+" LJ sigma^-3 with charges of "+str(salt_cat_chg_1)+" and "+str(salt_ani_chg_1)+". and a salt concentration of "+str(salt_conc_2)+" LJ sigma^-3 with charegs of "+str(salt_cat_chg_2)+" and "+str(salt_ani_chg_2)+"."
 
 #Create random list of counter ions and salt ions
 p_dict = {}
 n_dict = {}
 a_dict = {}
 b_dict = {}
+c_dict = {}
+d_dict = {}
 p_count = 0
 n_count = 0
 a_count = 0
 b_count = 0
+c_count = 0
+d_count = 0
 p_ctr_list = ['p'] * N_count
 n_ctr_list = ['n'] * P_count
-Sp_list = ['a'] * tot_salt_cat
-Sn_list = ['b'] * tot_salt_ani
-ctr_list = p_ctr_list + n_ctr_list + Sp_list + Sn_list
+Sp_list_1 = ['a'] * tot_salt_cat_1
+Sn_list_1 = ['b'] * tot_salt_ani_1
+Sp_list_2 = ['c'] * tot_salt_cat_2
+Sn_list_2 = ['d'] * tot_salt_ani_2
+ctr_list = p_ctr_list + n_ctr_list + Sp_list_1 + Sn_list_1 + Sp_list_2 + Sn_list_2
 for i in range(5):
     ctr_list = random.sample(ctr_list,len(ctr_list))
 
@@ -236,6 +254,12 @@ while len(ctr_list) > 0:
         if sim_grid[xrand,yrand,zrand] == 'b':
             b_count += 1
             b_dict[b_count] = str(xrand)+','+str(yrand)+','+str(zrand)
+        if sim_grid[xrand,yrand,zrand] == 'c':
+            c_count += 1
+            c_dict[c_count] = str(xrand)+','+str(yrand)+','+str(zrand)
+        if sim_grid[xrand,yrand,zrand] == 'd':
+            d_count += 1
+            d_dict[d_count] = str(xrand)+','+str(yrand)+','+str(zrand)
     else:
         continue
 
@@ -257,6 +281,11 @@ for i in range(1,a_count+1,1):
     tot_atom_dict[i+S_count+Z_count+P_count+N_count+p_count+n_count] = a_dict[i]
 for i in range(1,b_count+1,1):
     tot_atom_dict[i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count] = b_dict[i]
+for i in range(1,c_count+1,1):
+    tot_atom_dict[i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count+c_count] = c_dict[i]
+for i in range(1,d_count+1,1):
+    tot_atom_dict[i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count+c_count+d_count] = d_dict[i]
+
 
 #Invert this dictionary
 inv_tot_atom_dict = {v: k for k,v in tot_atom_dict.items()}
@@ -344,9 +373,11 @@ print "poly atoms P \t\t "+str(P_count)
 print "poly atoms N \t\t "+str(N_count)
 print "pos atoms cat \t "+str(p_count)
 print "neg atoms cat \t "+str(n_count)
-print "pos atoms salt \t "+str(a_count)
-print "neg atoms salt \t "+str(b_count)
-print "Total atoms \t "+str(S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count)
+print "pos atoms salt_1 \t "+str(a_count)
+print "neg atoms salt_1 \t "+str(b_count)
+print "pos atoms salt_2 \t "+str(c_count)
+print "neg atoms salt_2 \t "+str(d_count)
+print "Total atoms \t "+str(S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count+c_count+d_count)
 
 #PLOT THE ENTIRE SIMULATION BOX
 #poly_size, ctr_size, and salt_size are all specification for the size of the plotted points below.
@@ -377,6 +408,10 @@ for i in range(Lx):
                 ax.scatter(grid_disc*i,grid_disc*j,grid_disc*k,c='purple',alpha=0.8,s=salt_size)
             elif sim_grid[i,j,k] == "b":
                 ax.scatter(grid_disc*i,grid_disc*j,grid_disc*k,c='green',alpha=0.8,s=salt_size)        
+            elif sim_grid[i,j,k] == "c":
+                ax.scatter(grid_disc*i,grid_disc*j,grid_disc*k,c='orange',alpha=0.8,s=salt_size)
+            elif sim_grid[i,j,k] == "d":
+                ax.scatter(grid_disc*i,grid_disc*j,grid_disc*k,c='yellow',alpha=0.8,s=salt_size)        
             else:
                 continue
 """
@@ -400,7 +435,7 @@ ax.set_ylim3d(0,Lx*grid_disc/2)
 ax.set_zlim3d(0,top_bound*grid_disc)
 plt.show()
 
-num_atom = S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count
+num_atom = S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count+c_count+d_count
 
 #Actually write the .data file
 print "There are "+str(num_atom)+" atoms in this system."
@@ -425,6 +460,10 @@ if a_count > 0:
     atom_typ_list.append('a')
 if b_count > 0:
     atom_typ_list.append('b')
+if c_count > 0:
+    atom_typ_list.append('c')
+if d_count > 0:
+    atom_typ_list.append('d')
 
 num_atom_type = len(atom_typ_list)
 num_bond_type = 1
@@ -467,13 +506,21 @@ for item in atom_typ_list:
         LJ_dict[item] = input_param['ctr_ani_LJ']
         m_dict[item] = input_param['ctr_ani_mass']
     elif item == 'a':
-        chg_dict[item] = input_param['salt_cat_chg']
-        LJ_dict[item] = input_param['salt_cat_LJ']
-        m_dict[item] = input_param['salt_cat_mass']
+        chg_dict[item] = input_param['salt_cat_chg_1']
+        LJ_dict[item] = input_param['salt_cat_LJ_1']
+        m_dict[item] = input_param['salt_cat_mass_1']
     elif item == 'b':
-        chg_dict[item] = input_param['salt_ani_chg']
-        LJ_dict[item] = input_param['salt_ani_LJ']
-        m_dict[item] = input_param['salt_ani_mass']
+        chg_dict[item] = input_param['salt_ani_chg_1']
+        LJ_dict[item] = input_param['salt_ani_LJ_1']
+        m_dict[item] = input_param['salt_ani_mass_1']
+    elif item == 'c':
+        chg_dict[item] = input_param['salt_ani_chg_2']
+        LJ_dict[item] = input_param['salt_ani_LJ_2']
+        m_dict[item] = input_param['salt_ani_mass_2']
+    elif item == 'd':
+        chg_dict[item] = input_param['salt_ani_chg_2']
+        LJ_dict[item] = input_param['salt_ani_LJ_2']
+        m_dict[item] = input_param['salt_ani_mass_2']
 
 #create angle dictionary
 angle_coeff_dict = {}
@@ -491,7 +538,7 @@ print "There are 0 angle types in this system."
 print "There are 0 dihedral types in this system."
 print "There are 0 improper types in this system."
 
-write_data('brush.data',num_atom,num_bond,num_ang,num_dih,num_imp,sim_grid,num_atom_type,num_bond_type,num_ang_type,num_dih_type,num_imp_type,Lx,Ly,top_bound,S_dict,Z_dict,P_dict,N_dict,p_dict,n_dict,a_dict,b_dict,S_count,Z_count,P_count,N_count,p_count,n_count,a_count,b_count,atom_typ_list,chg_dict,LJ_dict,m_dict,grid_disc,rev_bond_dict,lin_angle_dict,per_angle_dict,angle_coeff_dict)
+write_data('brush.data',num_atom,num_bond,num_ang,num_dih,num_imp,sim_grid,num_atom_type,num_bond_type,num_ang_type,num_dih_type,num_imp_type,Lx,Ly,top_bound,S_dict,Z_dict,P_dict,N_dict,p_dict,n_dict,a_dict,b_dict,c_dict,d_dict,S_count,Z_count,P_count,N_count,p_count,n_count,a_count,b_count,c_count,d_count,atom_typ_list,chg_dict,LJ_dict,m_dict,grid_disc,rev_bond_dict,lin_angle_dict,per_angle_dict,angle_coeff_dict)
 
 write_init('brush.init')
 

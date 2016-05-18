@@ -63,13 +63,20 @@ ctr_ani_mass = 1.0
 ctr_cat_mass = 1.0
 
 #Salt particle features
-salt_conc = 0.0000001
-salt_cat_chg = 1.0
-salt_ani_chg = -1.0
-salt_cat_LJ = 1.0,1.0
-salt_ani_LJ = 1.0,1.0
-salt_ani_mass = 1.0
-salt_cat_mass = 1.0
+salt_conc_1 = 0.001
+salt_conc_2 = 0.0005
+salt_cat_chg_1 = 3.0
+salt_ani_chg_1 = -1.0
+salt_cat_LJ_1 = 1.0,1.0
+salt_ani_LJ_1 = 1.0,1.0
+salt_ani_mass_1 = 1.0
+salt_cat_mass_1 = 1.0
+salt_cat_chg_2 = 1.0
+salt_ani_chg_2 = -1.0
+salt_cat_LJ_2 = 1.0,1.0
+salt_ani_LJ_2 = 1.0,1.0
+salt_cat_mass_2 = 1.0
+salt_ani_mass_2 = 1.0
 
 #Substrate particle features
 S_LJ = 0.0,1.0

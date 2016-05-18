@@ -183,21 +183,23 @@ elif branch_choice == 'yes':
 
 #PLACE SALT RANDOMLY INTO THE EMPTY SPACES OF THE SIMULATION GRID
 
-salt_ani_chg = float(input_param['salt_ani_chg'])
-salt_cat_chg = float(input_param['salt_cat_chg'])
-salt_conc = float(input_param['salt_conc'])
-salt_pairs = int(salt_conc*Lx*Ly*top_bound*(grid_disc**3))
-cat_ani_ratio = abs(salt_cat_chg/salt_ani_chg)
-tot_salt_ani = salt_pairs
-tot_salt_cat = salt_pairs
+salt_ani_chg_1 = float(input_param['salt_ani_chg_1'])
+salt_cat_chg_1 = float(input_param['salt_cat_chg_1'])
+salt_conc_1 = float(input_param['salt_conc_1'])
+salt_pairs_1 = int(salt_conc_1*Lx*Ly*top_bound*(grid_disc**3))
+cat_ani_ratio_1 = abs(salt_cat_chg_1/salt_ani_chg_1)
+tot_salt_ani_1 = salt_pairs_1
+tot_salt_cat_1 = salt_pairs_1
 
 
-if cat_ani_ratio < 1.0:
-    tot_salt_cat = int(salt_pairs/cat_ani_ratio)
-elif cat_ani_ratio > 1.0:
-    tot_salt_ani = int(salt_pairs*cat_ani_ratio)
 
-print "The system has been specific to run at a salt concentration of "+str(salt_conc)+"LJ sigma^-3."
+
+if cat_ani_ratio_1 < 1.0:
+    tot_salt_cat_1 = int(salt_pairs_1/cat_ani_ratio_1)
+elif cat_ani_ratio_1 > 1.0:
+    tot_salt_ani_1 = int(salt_pairs_1*cat_ani_ratio_1)
+
+print "The system has been specific to run at a salt concentration of "+str(salt_conc_1)+"LJ sigma^-3."
 
 #Create random list of counter ions and salt ions
 p_dict = {}
@@ -210,9 +212,9 @@ a_count = 0
 b_count = 0
 p_ctr_list = ['p'] * N_count
 n_ctr_list = ['n'] * P_count
-Sp_list = ['a'] * tot_salt_cat
-Sn_list = ['b'] * tot_salt_ani
-ctr_list = p_ctr_list + n_ctr_list + Sp_list + Sn_list
+Sp_list_1 = ['a'] * tot_salt_cat_1
+Sn_list_1 = ['b'] * tot_salt_ani_1
+ctr_list = p_ctr_list + n_ctr_list + Sp_list_1 + Sn_list_1
 for i in range(5):
     ctr_list = random.sample(ctr_list,len(ctr_list))
 
@@ -379,7 +381,7 @@ for i in range(Lx):
                 ax.scatter(grid_disc*i,grid_disc*j,grid_disc*k,c='green',alpha=0.8,s=salt_size)        
             else:
                 continue
-
+"""
 #Plot all bonds
 line_thick = 2.
 for i in range(1,len(rev_bond_dict)+1,1):
@@ -393,7 +395,7 @@ for i in range(1,len(rev_bond_dict)+1,1):
     z1 = grid_disc*float(xyz_1[2])
     z2 = grid_disc*float(xyz_2[2])
     ax.plot([x1,x2],[y1,y2],[z1,z2],linewidth=line_thick,c='black')
-
+"""
 ax.view_init(elev=0.,azim=45)
 ax.set_xlim3d(0,Lx*grid_disc/2)
 ax.set_ylim3d(0,Lx*grid_disc/2)
@@ -467,13 +469,13 @@ for item in atom_typ_list:
         LJ_dict[item] = input_param['ctr_ani_LJ']
         m_dict[item] = input_param['ctr_ani_mass']
     elif item == 'a':
-        chg_dict[item] = input_param['salt_cat_chg']
-        LJ_dict[item] = input_param['salt_cat_LJ']
-        m_dict[item] = input_param['salt_cat_mass']
+        chg_dict[item] = input_param['salt_cat_chg_1']
+        LJ_dict[item] = input_param['salt_cat_LJ_1']
+        m_dict[item] = input_param['salt_cat_mass_1']
     elif item == 'b':
-        chg_dict[item] = input_param['salt_ani_chg']
-        LJ_dict[item] = input_param['salt_ani_LJ']
-        m_dict[item] = input_param['salt_ani_mass']
+        chg_dict[item] = input_param['salt_ani_chg_1']
+        LJ_dict[item] = input_param['salt_ani_LJ_1']
+        m_dict[item] = input_param['salt_ani_mass_1']
 
 #create angle dictionary
 angle_coeff_dict = {}
