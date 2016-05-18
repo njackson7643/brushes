@@ -7,10 +7,10 @@ substr_len = 10
 #Arrangement of substrate sites
 substr_patt = cubic
 #Lattice spacing between substrate sites.  Must be a multiple of 0.1 LJ sigma.
-lat_spacing = 1.0
+lat_spacing = 1.5
 temp = 1.2
-equil_steps = 20000
-sample_steps = 20000
+equil_steps = 1000
+sample_steps = 1000
 dump_int = 100
 tstep = 0.01
 dielectric = 1.0

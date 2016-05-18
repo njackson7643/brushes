@@ -19,7 +19,7 @@ xmax = 15
 ymin = 0
 ymax = 15
 zmin = 0
-zmax = 22
+zmax = 42
 grid_size = 1.0
 
 #ANALYZE POLYMER TRAJECTORY FILE.  POLY_WRAP
@@ -151,7 +151,7 @@ for i in range(len(z_mean_arr)):
     plt.legend()
 
 #Analyze Salt Distribution 
-#salt_grid has an extra dimension to accomodate different salt types (+1,+2,+3,-1)
+#salt_grid has an extra dimension to accomodate different salt types (-1,+1,+2,+3)
 salt_grid = np.zeros ( (4,int((xmax-xmin)/grid_size),int((ymax-ymin)/grid_size),int((zmax-zmin)/grid_size)) , dtype = float)
 
 with open(salt_file,'r') as f:
@@ -203,13 +203,13 @@ z_dist_arr[3] = np.insert(z_dist_arr[3],0.0,0)
 
 #normalize z_dist and computer mean salt heights
 z_mean_arr = []
+
 for i in range(4):
     if sum(z_dist_arr[i]) > 0.0:
         z_dist_arr[i] = z_dist_arr[i]/(sum(z_dist_arr[i]))
         z_mean_arr.append(np.dot(z_dist_arr[i],z_arr)/sum(z_dist_arr[i]))
     else:
         z_mean_arr.append(0.0)
-
 
 color_list = ['orange','purple','green','cyan']
 legend_list = ['-1 anion','+1 cation','+2 cation','+3 cation']

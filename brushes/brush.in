@@ -32,11 +32,11 @@ fix wall2 not_substr wall/lj126 zhi EDGE 1.0 1.0 2.5
 minimize 1.0e-4 1.0e-4 2000 2000
 
 #Run NVT Equilibration
-velocity not_substr create 1.2 43780936
+velocity not_substr create 1.2 10655174
 fix 10 not_substr nve
 fix 2 not_substr langevin 1.2 1.2 100.0 986537
 dump 1 dump_group custom 100 equil.trj id type x y z
-run 20000
+run 1000
 unfix 2
 unfix 10
 undump 1
@@ -45,11 +45,11 @@ undump 1
 velocity not_substr scale 1.2
 dielectric 		 1.0 
 fix 11 not_substr nve
-fix 3 not_substr langevin 1.2 1.2 100.0 37614089
+fix 3 not_substr langevin 1.2 1.2 100.0 10895820
 dump 2 polymers custom 100 polymers.trj id type q xu yu zu
 dump 3 ctr_ions custom 100 ctrions.trj id type q x y z
 dump 4 salt custom 100 salt.trj id type q x y z
-run 20000
+run 1000
 unfix 3
 unfix 11
 undump 2
