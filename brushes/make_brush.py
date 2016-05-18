@@ -366,6 +366,7 @@ print 'The bond search algorithm found '+str(len(rev_bond_dict))+' bonds'
 print 'The angle search algorithm found '+str(len(angle_dict))+ ' angles'
 
 num_ang = len(angle_dict)
+num_bond = len(rev_bond_dict)
 
 print "Substrate atoms \t "+str(S_count)
 print "poly atoms Z \t\t "+str(Z_count)
@@ -414,7 +415,7 @@ for i in range(Lx):
                 ax.scatter(grid_disc*i,grid_disc*j,grid_disc*k,c='yellow',alpha=0.8,s=salt_size)        
             else:
                 continue
-"""
+
 #Plot all bonds
 line_thick = 2.
 for i in range(1,len(rev_bond_dict)+1,1):
@@ -428,7 +429,7 @@ for i in range(1,len(rev_bond_dict)+1,1):
     z1 = grid_disc*float(xyz_1[2])
     z2 = grid_disc*float(xyz_2[2])
     ax.plot([x1,x2],[y1,y2],[z1,z2],linewidth=line_thick,c='black')
-"""
+
 ax.view_init(elev=0.,azim=45)
 ax.set_xlim3d(0,Lx*grid_disc/2)
 ax.set_ylim3d(0,Lx*grid_disc/2)

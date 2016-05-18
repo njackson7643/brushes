@@ -28,7 +28,7 @@ def setup_parser(filename):
     #return a hashed table with the input parameters and the read-in values
     return {k:v for k,v in zip(keys,input_param)}
 
-def write_data(filename,num_atom,num_bond,num_ang,num_dih,num_imp,sim_grid,num_atom_type,num_bond_type,num_ang_type,num_dih_type,num_imp_type,Lx,Ly,top_bound,S_dict,Z_dict,P_dict,N_dict,p_dict,n_dict,a_dict,b_dict,S_count,Z_count,P_count,N_count,p_count,n_count,a_count,b_count,atom_type_list,chg_dict,LJ_dict,m_dict,grid_disc,rev_bond_dict,lin_angle_dict,per_angle_dict,angle_coeff_dict):
+def write_data(filename,num_atom,num_bond,num_ang,num_dih,num_imp,sim_grid,num_atom_type,num_bond_type,num_ang_type,num_dih_type,num_imp_type,Lx,Ly,top_bound,S_dict,Z_dict,P_dict,N_dict,p_dict,n_dict,a_dict,b_dict,c_dict,d_dict,S_count,Z_count,P_count,N_count,p_count,n_count,a_count,b_count,c_count,d_count,atom_type_list,chg_dict,LJ_dict,m_dict,grid_disc,rev_bond_dict,lin_angle_dict,per_angle_dict,angle_coeff_dict):
     wfile = open(filename,'w')
     wfile.write("LAMMPS Description\n\n")
     wfile.write("\t "+str(num_atom)+" atoms\n")
@@ -110,6 +110,20 @@ def write_data(filename,num_atom,num_bond,num_ang,num_dih,num_imp,sim_grid,num_a
         for i in range(1,b_count+1,1):
             curr = b_dict[i].split(',')
             wfile.write(str(i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count)+" "+str(mol_count)+" "+str(typ_count+1)+"\t"+str(chg_dict[atom_type_list[typ_count]])+"\t"+str(float(curr[0])*grid_disc)+"\t"+str(float(curr[1])*grid_disc)+"\t"+str(float(curr[2])*grid_disc)+"\n")
+#Write c atoms
+    if c_count > 0:
+        mol_count += 1
+        typ_count += 1
+        for i in range(1,c_count+1,1):
+            curr = c_dict[i].split(',')
+            wfile.write(str(i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count)+" "+str(mol_count)+" "+str(typ_count+1)+"\t"+str(chg_dict[atom_type_list[typ_count]])+"\t"+str(float(curr[0])*grid_disc)+"\t"+str(float(curr[1])*grid_disc)+"\t"+str(float(curr[2])*grid_disc)+"\n")
+#Write d atoms
+    if d_count > 0:
+        mol_count += 1
+        typ_count += 1
+        for i in range(1,d_count+1,1):
+            curr = d_dict[i].split(',')
+            wfile.write(str(i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count+c_count)+" "+str(mol_count)+" "+str(typ_count+1)+"\t"+str(chg_dict[atom_type_list[typ_count]])+"\t"+str(float(curr[0])*grid_disc)+"\t"+str(float(curr[1])*grid_disc)+"\t"+str(float(curr[2])*grid_disc)+"\n")
 #Write BONDS section
     wfile.write("\n")
     wfile.write("Bonds\n\n")
@@ -202,7 +216,7 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     elif "N" in atom_type_list:
         wfile.write("group polymers type 2\n")
         wfile.write("group ctr_ions type 3\n")
-    if "a" in atom_type_list:
+    if "a" in atom_type_list or "b" in atom_type_list:
         wfile.write("group salt subtract all substrates polymers ctr_ions\n")
     wfile.write("group dump_group subtract all top_substr\n")
     wfile.write("fix 1 substrates setforce 0.0 0.0 0.0\n")

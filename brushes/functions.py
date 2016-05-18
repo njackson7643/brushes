@@ -262,7 +262,7 @@ def bond_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,si
     for i in range(Lx):
         for j in range(Ly):
             for k in range(top_bound/2):
-                if sim_grid[i,j,k] != '' and sim_grid[i,j,k] != 'p' and sim_grid[i,j,k] != 'n' and sim_grid[i,j,k] != 'a' and sim_grid[i,j,k] != 'b':
+                if sim_grid[i,j,k] != '' and sim_grid[i,j,k] != 'p' and sim_grid[i,j,k] != 'n' and sim_grid[i,j,k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j,k] != 'd':
                     curr_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k)]
                     curr_type = sim_grid[i,j,k]
                     i_m_num = ''
@@ -354,7 +354,7 @@ def angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,s
             #Starting at 3 in the z direction ensures that the angle potentials don't connect to the substrate
             #Start k at 1 if you want it to connect through the substrate
             for k in range(3,top_bound/2):
-                if sim_grid[i,j,k] != '' and sim_grid[i,j,k] != 'p' and sim_grid[i,j,k] != 'n' and sim_grid[i,j,k] != 'a' and sim_grid[i,j,k] != 'b':
+                if sim_grid[i,j,k] != '' and sim_grid[i,j,k] != 'p' and sim_grid[i,j,k] != 'n' and sim_grid[i,j,k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j,k] != 'd':
                     curr_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k)]
                     curr_type = sim_grid[i,j,k]
                     i_m_num = ''

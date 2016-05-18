@@ -1,17 +1,17 @@
 #Total Number of Chains to be grafted onto substrate
 num_chain = 25
 #Molecular weight of chains grafted to substrate (# of monomers)
-chain_len = 10
+chain_len = 20
 #Total number of substrate sites in one dimension
 substr_len = 10
 #Arrangement of substrate sites
 substr_patt = cubic
 #Lattice spacing between substrate sites.  Must be a multiple of 0.1 LJ sigma.
-lat_spacing = 1.5
+lat_spacing = 1.0
 temp = 1.2
-equil_steps = 100000
-sample_steps = 100000
-dump_int = 1000
+equil_steps = 20000
+sample_steps = 20000
+dump_int = 100
 tstep = 0.01
 dielectric = 1.0
 
@@ -63,8 +63,8 @@ ctr_ani_mass = 1.0
 ctr_cat_mass = 1.0
 
 #Salt particle features
-salt_conc_1 = 0.001
-salt_conc_2 = 0.0005
+salt_conc_1 = 0.01
+salt_conc_2 = 0.005
 salt_cat_chg_1 = 3.0
 salt_ani_chg_1 = -1.0
 salt_cat_LJ_1 = 1.0,1.0
