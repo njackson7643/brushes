@@ -71,20 +71,20 @@ side_view = (xz_dist + yz_dist)/2.
 #Plot z particle density distribution function
 plt.figure(1)
 plt.subplot(221)
-plt.plot(z_arr,z_dist,color='black',linewidth=2)
-plt.xlim(zmin,zmax)
-plt.ylim(0,max(z_dist))
-plt.title('Polymer monomer density distribution')
-plt.xlabel('z-position')
-plt.ylabel('probability')
+plt.plot(z_dist,z_arr,color='black',linewidth=2)
+plt.ylim(zmin,zmax)
+plt.xlim(0,max(z_dist))
+plt.title('Polymer monomer density distribution',fontsize=12)
+plt.xlabel('z-axis')
+plt.ylabel('Probability')
 
 #Plot side-view of polymer density
 plt.subplot(222)
 plt.imshow(side_view,origin='lower')
-plt.title('Side face view of polymer density distribution.  Color map = probability.')
-plt.xlabel('averaged x/y dimension')
-plt.ylabel('z dimension')
-
+plt.title('Side face view of polymer density distribution.',fontsize=12)
+plt.xlabel('<x/y> axis')
+plt.ylabel('z axis')
+plt.ylim(zmin,zmax/2.)
 
 #Analyze Counterion Distribution 
 ctr_grid = np.zeros ( (2,int((xmax-xmin)/grid_size),int((ymax-ymin)/grid_size),int((zmax-zmin)/grid_size)) , dtype = float)
@@ -142,12 +142,12 @@ legend_list = ['-1 anion','+1 cation']
 plt.subplot(223)
 for i in range(len(z_mean_arr)):
     if z_mean_arr[i] > 0.0:
-        plt.plot(z_arr,z_dist_arr[i],color=color_list[i],linewidth=2,label=legend_list[i])
-        plt.xlim(zmin,zmax)
-        plt.ylim(0,max(z_dist_arr[i]))
-    plt.title('Counter ion density distribution on z-axis')
-    plt.xlabel('z direction')
-    plt.ylabel('probability')
+        plt.plot(z_dist_arr[i],z_arr,color=color_list[i],linewidth=2,label=legend_list[i])
+        plt.ylim(zmin,zmax)
+        plt.xlim(0,max(z_dist_arr[i]))
+    plt.title('Counter ion density distribution',fontsize=12)
+    plt.xlabel('z-axis')
+    plt.ylabel('Probability')
     plt.legend()
 
 #Analyze Salt Distribution 
@@ -217,12 +217,13 @@ legend_list = ['-1 anion','+1 cation','+2 cation','+3 cation']
 plt.subplot(224)
 for i in range(len(z_mean_arr)):
     if z_mean_arr[i] > 0.0:
-        plt.plot(z_arr,z_dist_arr[i],color=color_list[i],linewidth=2,label=legend_list[i])
-        plt.xlim(zmin,zmax)
-        plt.ylim(0,max(z_dist_arr[i]))
-    plt.title('Salt ion density distribution on z-axis')
-    plt.xlabel('z direction')
-    plt.ylabel('probability')
+        plt.plot(z_dist_arr[i],z_arr,color=color_list[i],linewidth=2,label=legend_list[i])
+        plt.ylim(zmin,zmax)
+        plt.xlim(0,max(z_dist_arr[i]))
+    plt.title('Salt ion density distribution',fontsize=12)
+    plt.xlabel('z-axis')
+    plt.ylabel('Probability')
+    plt.legend()
 
 #plt.tight_layout()
 plt.show()
