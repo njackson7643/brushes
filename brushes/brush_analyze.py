@@ -65,12 +65,16 @@ xz_dist = xz_dist.T
 yz_dist = np.mean(poly_grid,axis=1)
 yz_dist = yz_dist/sum(yz_dist)
 yz_dist = yz_dist.T
-
 side_view = (xz_dist + yz_dist)/2.
+
+#compute xy face
+xy_dist = np.mean(poly_grid,axis=2)
+xy_dist = xy_dist/sum(xy_dist)
+xy_dist = xy_dist.T
 
 #Plot z particle density distribution function
 plt.figure(1)
-plt.subplot(221)
+plt.subplot(231)
 plt.plot(z_dist,z_arr,color='black',linewidth=2)
 plt.ylim(zmin,zmax/2)
 #For probability axis limits, can use max(z_dist), but practically speaking 0.2 is good
@@ -80,12 +84,19 @@ plt.ylabel('z-axis')
 plt.xlabel('Probability')
 
 #Plot side-view of polymer density
-plt.subplot(222)
+plt.subplot(232)
 plt.imshow(side_view,origin='lower')
 plt.title('Side face view of polymer density distribution.',fontsize=12)
 plt.xlabel('<x/y> axis')
 plt.ylabel('z axis')
 plt.ylim(zmin,zmax/2.)
+
+#Plot top-down view of polymer density
+plt.subplot(233)
+plt.imshow(xy_dist)
+plt.title('Top-down view of polymer density.',fontsize=12)
+plt.xlabel('x axis')
+plt.ylabel('y axis')
 
 #Analyze Counterion Distribution 
 ctr_grid = np.zeros ( (2,int((xmax-xmin)/grid_size),int((ymax-ymin)/grid_size),int((zmax-zmin)/grid_size)) , dtype = float)
@@ -140,7 +151,7 @@ legend_list = ['-1 anion','+1 cation']
 
 #Plot z-distribution of counter ion density
 
-plt.subplot(223)
+plt.subplot(234)
 for i in range(len(z_mean_arr)):
     if z_mean_arr[i] > 0.0:
         plt.plot(z_dist_arr[i],z_arr,color=color_list[i],linewidth=2,label=legend_list[i])
@@ -216,7 +227,7 @@ color_list = ['orange','purple','green','cyan']
 legend_list = ['-1 anion','+1 cation','+2 cation','+3 cation']
 
 
-plt.subplot(224)
+plt.subplot(235)
 for i in range(len(z_mean_arr)):
     if z_mean_arr[i] > 0.0:
         plt.plot(z_dist_arr[i],z_arr,color=color_list[i],linewidth=2,label=legend_list[i])
