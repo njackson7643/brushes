@@ -19,7 +19,7 @@ xmax = 15
 ymin = 0
 ymax = 15
 zmin = 0
-zmax = 42
+zmax = 62
 grid_size = 1.0
 
 #ANALYZE POLYMER TRAJECTORY FILE.  POLY_WRAP
@@ -73,7 +73,8 @@ plt.figure(1)
 plt.subplot(221)
 plt.plot(z_dist,z_arr,color='black',linewidth=2)
 plt.ylim(zmin,zmax/2)
-plt.xlim(0,max(z_dist))
+#For probability axis limits, can use max(z_dist), but practically speaking 0.2 is good
+plt.xlim(0,0.2)
 plt.title('Polymer monomer density distribution',fontsize=12)
 plt.ylabel('z-axis')
 plt.xlabel('Probability')
@@ -143,8 +144,8 @@ plt.subplot(223)
 for i in range(len(z_mean_arr)):
     if z_mean_arr[i] > 0.0:
         plt.plot(z_dist_arr[i],z_arr,color=color_list[i],linewidth=2,label=legend_list[i])
-        plt.ylim(zmin,zmax)
-        plt.xlim(0,max(z_dist_arr[i]))
+        plt.ylim(zmin,zmax/2.)
+        plt.xlim(0,0.2)
     plt.title('Counter ion density distribution',fontsize=12)
     plt.ylabel('z-axis')
     plt.xlabel('Probability')
@@ -218,8 +219,8 @@ plt.subplot(224)
 for i in range(len(z_mean_arr)):
     if z_mean_arr[i] > 0.0:
         plt.plot(z_dist_arr[i],z_arr,color=color_list[i],linewidth=2,label=legend_list[i])
-        plt.ylim(zmin,zmax)
-        plt.xlim(0,max(z_dist_arr[i]))
+        plt.ylim(zmin,zmax/2.)
+        plt.xlim(0,0.2)
     plt.title('Salt ion density distribution',fontsize=12)
     plt.ylabel('z-axis')
     plt.xlabel('Probability')

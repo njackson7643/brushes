@@ -21,7 +21,6 @@ group bot_substr id <= 100
 group top_substr subtract substrates bot_substr
 group polymers type 2:3
 group ctr_ions type 4
-group salt subtract all substrates polymers ctr_ions
 group dump_group subtract all top_substr
 fix 1 substrates setforce 0.0 0.0 0.0
 group not_substr subtract all substrates
@@ -32,7 +31,7 @@ fix wall2 not_substr wall/lj126 zhi EDGE 1.0 1.0 2.5
 minimize 1.0e-4 1.0e-4 2000 2000
 
 #Run NVT Equilibration
-velocity not_substr create 1.2 97890606
+velocity not_substr create 1.2 18231409
 fix 10 not_substr nve
 fix 2 not_substr langevin 1.2 1.2 100.0 986537
 dump 1 dump_group custom 100 equil.trj id type x y z
@@ -45,14 +44,12 @@ undump 1
 velocity not_substr scale 1.2
 dielectric 		 1.0 
 fix 11 not_substr nve
-fix 3 not_substr langevin 1.2 1.2 100.0 82217088
+fix 3 not_substr langevin 1.2 1.2 100.0 71305717
 dump 2 polymers custom 100 polymers.trj id type q xu yu zu
 dump 3 ctr_ions custom 100 ctrions.trj id type q x y z
-dump 4 salt custom 100 salt.trj id type q x y z
 run 100000
 unfix 3
 unfix 11
 undump 2
 
 undump 3
-undump 4
