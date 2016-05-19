@@ -63,9 +63,9 @@ ctr_ani_mass = 1.0
 ctr_cat_mass = 1.0
 
 #Salt particle features
-salt_conc_1 = 0.01
-salt_conc_2 = 0.005
-salt_cat_chg_1 = 3.0
+salt_conc_1 = 0.001
+salt_conc_2 = 0.0
+salt_cat_chg_1 = 1.0
 salt_ani_chg_1 = -1.0
 salt_cat_LJ_1 = 1.0,1.0
 salt_ani_LJ_1 = 1.0,1.0

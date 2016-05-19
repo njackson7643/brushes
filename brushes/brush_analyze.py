@@ -215,6 +215,7 @@ for i in range(4):
 color_list = ['orange','purple','green','cyan']
 legend_list = ['-1 anion','+1 cation','+2 cation','+3 cation']
 
+
 plt.subplot(224)
 for i in range(len(z_mean_arr)):
     if z_mean_arr[i] > 0.0:

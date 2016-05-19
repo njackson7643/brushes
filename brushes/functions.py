@@ -240,18 +240,21 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("fix 11 not_substr nve\n")
     wfile.write("fix 3 not_substr langevin "+str(temp)+" "+str(temp)+ " 100.0 "+str(vel_seed2)+"\n")
     wfile.write("dump 2 polymers custom "+str(dump_int)+" polymers.trj id type q xu yu zu\n")
+    wfile.write("dump 55 polymers custom "+str(dump_int)+" poly_wrap.trj id type q x y z\n")
     if "P" in atom_type_list or "N" in atom_type_list:
         wfile.write("dump 3 ctr_ions custom "+str(dump_int)+" ctrions.trj id type q x y z\n")
-    if "a" in atom_type_list or "b" in atom_type_list:
+    if "a" in atom_type_list or "b" in atom_type_list or "c" in atom_type_list or "d" in atom_type_list:
         wfile.write("dump 4 salt custom "+str(dump_int)+" salt.trj id type q x y z\n")
     wfile.write("run "+str(sample_steps)+"\n")
     wfile.write("unfix 3\n")
     wfile.write("unfix 11\n")
     wfile.write("undump 2\n\n")
+    wfile.write("undump 55\n\n")
     if "P" in atom_type_list or "N" in atom_type_list:
         wfile.write("undump 3\n")
     if "a" in atom_type_list or "b" in atom_type_list:
         wfile.write("undump 4\n")
+    
 
 #    wfile.write("velocity not_substr all create 1.0 094376\n")
     

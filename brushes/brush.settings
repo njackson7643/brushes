@@ -27,5 +27,5 @@ bond_coeff 1 30.0 1.5 1.0 1.0
 
 
 #Harmonic Angle Interaction 
-angle_coeff 1 1.0 180.0
+angle_coeff 1 15.0 180.0
 angle_coeff 2 10.0 90.0

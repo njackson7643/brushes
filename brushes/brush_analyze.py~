@@ -144,7 +144,7 @@ plt.subplot(223)
 for i in range(len(z_mean_arr)):
     if z_mean_arr[i] > 0.0:
         plt.plot(z_dist_arr[i],z_arr,color=color_list[i],linewidth=2,label=legend_list[i])
-        plt.ylim(zmin,zmax/2)
+        plt.ylim(zmin,zmax/2.)
         plt.xlim(0,0.2)
     plt.title('Counter ion density distribution',fontsize=12)
     plt.ylabel('z-axis')
@@ -215,11 +215,13 @@ for i in range(4):
 color_list = ['orange','purple','green','cyan']
 legend_list = ['-1 anion','+1 cation','+2 cation','+3 cation']
 
+print z_mean_arr
+
 plt.subplot(224)
 for i in range(len(z_mean_arr)):
     if z_mean_arr[i] > 0.0:
         plt.plot(z_dist_arr[i],z_arr,color=color_list[i],linewidth=2,label=legend_list[i])
-        plt.ylim(zmin,zmax)
+        plt.ylim(zmin,zmax/2.)
         plt.xlim(0,0.2)
     plt.title('Salt ion density distribution',fontsize=12)
     plt.ylabel('z-axis')
@@ -227,6 +229,6 @@ for i in range(len(z_mean_arr)):
     plt.legend()
 
 #plt.tight_layout()
-plt.show()
+#plt.show()
 
 #analyze the lammps.trj file and computes the number density of polymers, salt, and cations as a function of z position
