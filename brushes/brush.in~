@@ -10,9 +10,8 @@ include "brush.settings"
 #------------- Run Section ----------- 
 
 thermo 100
-thermo_style custom step dt temp press vol etotal ke pe ebond eangle evdwl ecoul elong
 run_style verlet
-timestep 0.008
+timestep 0.005
 
 #SIMULATION BOX FIXES
 
@@ -27,15 +26,20 @@ group not_substr subtract all substrates
 fix wall1 not_substr wall/lj126 zlo EDGE 1.0 1.0 2.5 
 fix wall2 not_substr wall/lj126 zhi EDGE 1.0 1.0 2.5 
 
+
+compute real_temp not_substr temp
+variable T equal real_temp
+thermo_style custom step dt v_T temp press vol etotal ke pe ebond eangle evdwl ecoul elong
+
 #Minimize the simulation box. 
 minimize 1.0e-4 1.0e-4 2000 2000
 
 #Run NVT Equilibration
-velocity not_substr create 1.0 69361803
+velocity not_substr create 1.0 83743359
 fix 10 not_substr nve
 fix 2 not_substr langevin 1.0 1.0 100.0 986537
 dump 1 dump_group custom 1000 equil.trj id type x y z
-run 20000
+run 10000
 unfix 2
 unfix 10
 undump 1
@@ -44,7 +48,7 @@ undump 1
 velocity not_substr scale 1.2
 dielectric 		 1.0 
 fix 11 not_substr nve
-fix 3 not_substr langevin 1.0 1.0 100.0 47063226
+fix 3 not_substr langevin 1.0 1.0 100.0 23928821
 dump 2 polymers custom 1000 polymers.trj id type q xu yu zu
 dump 55 polymers custom 1000 poly_wrap.trj id type q x y z
 dump 3 ctr_ions custom 1000 ctrions.trj id type q x y z
