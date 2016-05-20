@@ -515,9 +515,9 @@ for item in atom_typ_list:
         LJ_dict[item] = input_param['salt_ani_LJ_1']
         m_dict[item] = input_param['salt_ani_mass_1']
     elif item == 'c':
-        chg_dict[item] = input_param['salt_ani_chg_2']
-        LJ_dict[item] = input_param['salt_ani_LJ_2']
-        m_dict[item] = input_param['salt_ani_mass_2']
+        chg_dict[item] = input_param['salt_cat_chg_2']
+        LJ_dict[item] = input_param['salt_cat_LJ_2']
+        m_dict[item] = input_param['salt_cat_mass_2']
     elif item == 'd':
         chg_dict[item] = input_param['salt_ani_chg_2']
         LJ_dict[item] = input_param['salt_ani_LJ_2']

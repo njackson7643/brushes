@@ -53,7 +53,7 @@ z_arr = np.insert(z_arr,0.0,0)
 #normalize z_dist
 z_dist = z_dist/(sum(z_dist))
 #Compute mean brush height
-z_mean = np.dot(z_dist,z_arr)/sum(z_dist)
+z_mean = 2.*np.dot(z_dist,z_arr)/sum(z_dist)
 print "The mean brush height is "+str(z_mean)+" sigma."
 
 #compute xz face
@@ -279,7 +279,7 @@ plt.xlabel('Time')
 plt.legend(prop={'size':6})
 
 plt.subplot(337)
-#plot total, potential, and kinetic energies
+#plot individual contributions to energy
 plt.scatter(data_arr[0]*time_step,data_arr[8],s=1,label = 'bond', color = 'red')
 plt.scatter(data_arr[0]*time_step,data_arr[9],s=1,label = 'angle', color = 'blue')
 plt.scatter(data_arr[0]*time_step,data_arr[10],s=1,label = 'vdwl', color = 'green')
@@ -293,9 +293,9 @@ plt.xlabel('Time')
 plt.legend(prop={'size':6})
 
 plt.subplot(338)
-#plot total, potential, and kinetic energies
+#plot temperature
 plt.scatter(data_arr[0]*time_step,data_arr[2],s=1,label = 'Temp', color = 'red')
-plt.ylim(0,3)
+plt.ylim(1.0,1.4)
 plt.xlim(0,time_step*(tot_steps+min_buffer))
 plt.title('System Temperature',fontsize=12)
 plt.ylabel('Temperature')

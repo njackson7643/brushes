@@ -59,8 +59,9 @@ for i in range(0,Lx,int(lat_spacing/grid_disc)):
 
 #MAKE GRAFTED POLYMER CHAINS.  ASSUMES UNIFORM GRAFTING DENSITY ON CUBIC LATTICE.
 ##1.Determine the substrate sites to be grafted to
+##Assuming the bjerrum length is that of water (~0.7 nm) then we can say bjerrum length = sigma, and sigma ~ 0.7 nm
 num_chain = int(input_param['num_chain'])
-abs_graft_dens_2D = float(num_chain/(substr_len*lat_spacing)**2)
+abs_graft_dens_2D = float(num_chain/(substr_len*lat_spacing*0.71)**2)
 abs_graft_dens_1D = math.sqrt(abs_graft_dens_2D)
 grid_graft_dens_2D = float(num_chain/(substr_len*lat_spacing/grid_disc)**2)
 grid_graft_dens_1D = math.sqrt(grid_graft_dens_2D)
