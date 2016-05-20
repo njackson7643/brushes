@@ -223,7 +223,7 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("fix wall1 not_substr wall/lj126 zlo EDGE 1.0 1.0 2.5 \n")
     wfile.write("fix wall2 not_substr wall/lj126 zhi EDGE 1.0 1.0 2.5 \n\n")
     wfile.write("compute real_temp not_substr temp\n")
-    wfile.write("thermo_style custom step dt real_temp press vol etotal ke pe ebond eangle evdwl ecoul elong\n")
+    wfile.write("thermo_style custom step dt c_real_temp press vol etotal ke pe ebond eangle evdwl ecoul elong\n")
     wfile.write("#Minimize the simulation box. \n")
     wfile.write("minimize 1.0e-4 1.0e-4 2000 2000\n\n")
     wfile.write("#Run NVT Equilibration\n")

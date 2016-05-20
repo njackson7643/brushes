@@ -28,8 +28,7 @@ fix wall2 not_substr wall/lj126 zhi EDGE 1.0 1.0 2.5
 
 
 compute real_temp not_substr temp
-variable T equal real_temp
-thermo_style custom step dt v_T temp press vol etotal ke pe ebond eangle evdwl ecoul elong
+thermo_style custom step dt c_real_temp temp press vol etotal ke pe ebond eangle evdwl ecoul elong
 
 #Minimize the simulation box. 
 minimize 1.0e-4 1.0e-4 2000 2000
@@ -39,7 +38,7 @@ velocity not_substr create 1.0 83743359
 fix 10 not_substr nve
 fix 2 not_substr langevin 1.0 1.0 100.0 986537
 dump 1 dump_group custom 1000 equil.trj id type x y z
-run 10000
+run 100000
 unfix 2
 unfix 10
 undump 1
