@@ -7,12 +7,12 @@ substr_len = 10
 #Arrangement of substrate sites
 substr_patt = cubic
 #Lattice spacing between substrate sites.  Must be a multiple of 0.1 LJ sigma.
-lat_spacing = 1.5
+lat_spacing = 2.0
 temp = 1.2
 equil_steps = 100000
 sample_steps = 100000
 dump_int = 1000
-tstep = 0.01
+tstep = 0.005
 dielectric = 1.0
 
 #Polymer features
@@ -33,7 +33,7 @@ poly_ang_theta_lin = 180.0
 #rest theta of polymer branch angle set to 90 degrees
 poly_ang_theta_per = 90.0
 #the bottom two parameters set to 0 leads to a flexible chain
-poly_ang_k_lin = 15.0
+poly_ang_k_lin = 1.0
 poly_ang_k_per = 10.0
 # mass of positive group
 P_mass = 1.0
@@ -42,11 +42,11 @@ N_mass = 1.0
 # mass of neutral group
 Z_mass = 1.0
 # LJ param of pos group
-P_LJ = 1.0,1.0
+P_LJ = 1.0,0.5
 # LJ param of neg group
-N_LJ = 1.0,1.0
+N_LJ = 1.0,0.5
 # LJ param of neut group 
-Z_LJ = 1.0,1.0
+Z_LJ = 1.0,0.5
 #Z charge must be 0.0
 Z_chg = 0.0
 #P charge must be 1.0
@@ -57,8 +57,8 @@ N_chg = -1.0
 #Counterion particle features
 ctr_cat_chg = 1.0
 ctr_ani_chg = -1.0
-ctr_cat_LJ = 1.0,1.0
-ctr_ani_LJ = 1.0,1.0
+ctr_cat_LJ = 1.0,0.5
+ctr_ani_LJ = 1.0,0.5
 ctr_ani_mass = 1.0
 ctr_cat_mass = 1.0
 
@@ -67,8 +67,8 @@ salt_conc_1 = 0.001
 salt_conc_2 = 0.0
 salt_cat_chg_1 = 1.0
 salt_ani_chg_1 = -1.0
-salt_cat_LJ_1 = 1.0,1.0
-salt_ani_LJ_1 = 1.0,1.0
+salt_cat_LJ_1 = 1.0,0.5
+salt_ani_LJ_1 = 1.0,0.5
 salt_ani_mass_1 = 1.0
 salt_cat_mass_1 = 1.0
 salt_cat_chg_2 = 1.0
