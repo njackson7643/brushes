@@ -1,18 +1,18 @@
 #Total Number of Chains to be grafted onto substrate
-num_chain = 140
+num_chain = 225
 #Molecular weight of chains grafted to substrate (# of monomers)
-chain_len = 60
+chain_len = 40
 #Total number of substrate sites in one dimension
-substr_len = 35
+substr_len = 30
 #Arrangement of substrate sites
 substr_patt = cubic
 #Lattice spacing between substrate sites.  Must be a multiple of 0.1 LJ sigma.
-lat_spacing = 2.0
+lat_spacing = 3.0
 temp = 1.0
-equil_steps = 200000
-sample_steps = 200000
+equil_steps = 2000000
+sample_steps = 1000000
 dump_int = 1000
-tstep = 0.01
+tstep = 0.008
 dielectric = 1.0
 
 #Polymer features

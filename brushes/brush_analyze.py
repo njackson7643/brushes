@@ -89,7 +89,7 @@ plt.imshow(side_view,origin='lower')
 plt.title('Side face view of polymer density distribution.',fontsize=12)
 plt.xlabel('<x/y> axis')
 plt.ylabel('z axis')
-plt.ylim(zmin,zmax/2.)
+plt.ylim(zmin,zmax/4.)
 
 #Plot top-down view of polymer density
 plt.subplot(333)
@@ -241,7 +241,7 @@ for i in range(len(z_mean_arr)):
 #Analyze simulation energies from log.lammps
 
 dump_step = 100
-tot_steps = 200000
+tot_steps = 3000000
 min_buffer = 30
 
 data_arr = np.zeros( (13,int(tot_steps/dump_step)+min_buffer) , dtype = float)
@@ -295,7 +295,7 @@ plt.legend(prop={'size':6})
 plt.subplot(338)
 #plot temperature
 plt.scatter(data_arr[0]*time_step,data_arr[2],s=1,label = 'Temp', color = 'red')
-plt.ylim(1.0,1.4)
+plt.ylim(0.6,1.4)
 plt.xlim(0,time_step*(tot_steps+min_buffer))
 plt.title('System Temperature',fontsize=12)
 plt.ylabel('Temperature')
