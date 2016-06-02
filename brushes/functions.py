@@ -188,8 +188,8 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("#------------- Settings Section ----------- \n\n")
     wfile.write("include "+'"'+filename[:-3]+'.settings"\n')
     wfile.write("#------------- Run Section ----------- \n\n")
-    wfile.write("thermo 1000\n")
-    wfile.write("restart 10000 restart.*\n")
+    wfile.write("thermo 100\n")
+    wfile.write("thermo_style custom step dt temp press vol etotal ke pe ebond eangle evdwl ecoul elong\n")
     wfile.write("run_style verlet\n")
     wfile.write("timestep "+str(tstep)+"\n\n")
     wfile.write("#SIMULATION BOX FIXES\n\n")
@@ -221,22 +221,10 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("group dump_group subtract all top_substr\n")
     wfile.write("fix 1 substrates setforce 0.0 0.0 0.0\n")
     wfile.write("group not_substr subtract all substrates\n")
-    wfile.write("fix wall1 not_substr wall/lj126 zlo EDGE 0.1 1.0 2.5 \n")
-    wfile.write("fix wall2 not_substr wall/lj126 zhi EDGE 0.1 1.0 2.5 \n\n")
-    wfile.write("compute real_temp not_substr temp\n")
-    wfile.write("thermo_style custom step dt c_real_temp press vol etotal ke pe ebond eangle evdwl ecoul elong\n")
+    wfile.write("fix wall1 not_substr wall/lj126 zlo EDGE 1.0 1.0 2.5 \n")
+    wfile.write("fix wall2 not_substr wall/lj126 zhi EDGE 1.0 1.0 2.5 \n\n")
     wfile.write("#Minimize the simulation box. \n")
-    wfile.write("fix poly_hold polymers setforce 0.0 0.0 0.0\n")
-    wfile.write("minimize 1.0e-6 1.0e-6 20000 20000\n\n")
-    wfile.write("unfix poly_hold\n\n")
-    wfile.write("#Initial Safe Equilibration to remove bad contacts\n")
-    wfile.write("fix temper not_substr nve/limit 0.1\n")
-    wfile.write("fix temper2 not_substr langevin 1.0 1.0 100.0 "+str(vel_seed1)+"\n")
-    wfile.write("fix rescale0 not_substr temp/rescale 2 1.0 1.0 0.2 1.0\n")
-    wfile.write("run 100000\n")
-    wfile.write("unfix rescale0\n")
-    wfile.write("unfix temper2\n")
-    wfile.write("unfix temper\n\n")
+    wfile.write("minimize 1.0e-4 1.0e-4 2000 2000\n\n")
     wfile.write("#Run NVT Equilibration\n")
     wfile.write("velocity not_substr create "+str(temp)+" "+str(vel_seed1)+"\n")
     wfile.write("fix 10 not_substr nve\n")
@@ -245,8 +233,9 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("run "+str(equil_steps)+"\n")
     wfile.write("unfix 2\n")
     wfile.write("unfix 10\n")
-    wfile.write("undump 1\n")
+    wfile.write("undump 1\n\n")
     wfile.write("#Run NVT Sampling\n")
+    wfile.write("velocity not_substr scale 1.2\n")
     wfile.write("dielectric \t\t "+str(dielectric)+" \n")
     wfile.write("fix 11 not_substr nve\n")
     wfile.write("fix 3 not_substr langevin "+str(temp)+" "+str(temp)+ " 100.0 "+str(vel_seed2)+"\n")
@@ -270,202 +259,270 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
 #    wfile.write("velocity not_substr all create 1.0 094376\n")
     
  
-def bond_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,side_bond_size):
-    bond_count = 1
-    bond_dict = {}
-    for i in range(Lx):
-        for j in range(Ly):
-            for k in range(top_bound/2):
-                if sim_grid[i,j,k] != '' and sim_grid[i,j,k] != 'p' and sim_grid[i,j,k] != 'n' and sim_grid[i,j,k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j,k] != 'd':
-                    curr_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k)]
-                    curr_type = sim_grid[i,j,k]
-                    i_m_num = ''
-                    i_m_type = ''
-                    i_p_num = ''
-                    i_p_type = ''
-                    j_m_num = ''
-                    j_m_type = ''
-                    j_p_num = ''
-                    j_p_type = ''
-                    k_m_num = ''
-                    k_m_type = ''
-                    k_p_num = ''
-                    k_p_type = ''
-                    if i < side_bond_size:
-                        i_m = Lx-side_bond_size-i 
-                        i_p = i+side_bond_size
-                    elif i > Lx-side_bond_size-1:
-                        i_m = i-side_bond_size
-                        i_p = i+side_bond_size-Lx
-                    else:
-                        i_m = i-side_bond_size
-                        i_p = i+side_bond_size
-                    if str(i_m)+','+str(j)+','+str(k) in inv_tot_atom_dict:
-                        i_m_num = inv_tot_atom_dict[str(i_m)+','+str(j)+','+str(k)]
-                        i_m_type = sim_grid[i_m,j,k]
-                    if str(i_p)+','+str(j)+','+str(k) in inv_tot_atom_dict:
-                        i_p_num = inv_tot_atom_dict[str(i_p)+','+str(j)+','+str(k)]
-                        i_p_type = sim_grid[i_p,j,k]
-                    if j < bond_size:
-                        j_m = Ly-side_bond_size-j 
-                        j_p = j+side_bond_size
-                    elif j > Ly-side_bond_size-1:
-                        j_m = j-side_bond_size
-                        j_p = j+side_bond_size-Ly
-                    else:
-                        j_m = j-side_bond_size
-                        j_p = j+side_bond_size
-                    if str(i)+','+str(j_m)+','+str(k) in inv_tot_atom_dict:
-                        j_m_num = inv_tot_atom_dict[str(i)+','+str(j_m)+','+str(k)]
-                        j_m_type = sim_grid[i,j_m,k]
-                    if str(i)+','+str(j_p)+','+str(k) in inv_tot_atom_dict:
-                        j_p_num = inv_tot_atom_dict[str(i)+','+str(j_p)+','+str(k)]
-                        j_p_type = sim_grid[i,j_p,k]
-                    if k < bond_size:
-                        k_m = top_bound-bond_size-k 
-                        k_p = k+bond_size
-                    elif k > top_bound-bond_size-1:
-                        k_m = k-bond_size
-                        k_p = i+bond_size-top_bound
-                    else:
-                        k_m = k-bond_size
-                        k_p = k+bond_size
-                    if str(i)+','+str(j)+','+str(k_m) in inv_tot_atom_dict:
-                        k_m_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k_m)]
-                        k_m_type = sim_grid[i,j,k_m]
-                    if str(i)+','+str(j)+','+str(k_p) in inv_tot_atom_dict:
-                        k_p_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k_p)]
-                        k_p_type = sim_grid[i,j,k_p]
+def bond_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,side_bond_size,branch_choice):
+    if branch_choice == 'yes':
+        bond_count = 1
+        bond_dict = {}
+        for i in range(Lx):
+            for j in range(Ly):
+                for k in range(top_bound/2):
+                    if sim_grid[i,j,k] != '' and sim_grid[i,j,k] != 'p' and sim_grid[i,j,k] != 'n' and sim_grid[i,j,k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j,k] != 'd':
+                        curr_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k)]
+                        curr_type = sim_grid[i,j,k]
+                        i_m_num = ''
+                        i_m_type = ''
+                        i_p_num = ''
+                        i_p_type = ''
+                        j_m_num = ''
+                        j_m_type = ''
+                        j_p_num = ''
+                        j_p_type = ''
+                        k_m_num = ''
+                        k_m_type = ''
+                        k_p_num = ''
+                        k_p_type = ''
+                        if i < side_bond_size:
+                            i_m = Lx-side_bond_size-i 
+                            i_p = i+side_bond_size
+                        elif i > Lx-side_bond_size-1:
+                            i_m = i-side_bond_size
+                            i_p = i+side_bond_size-Lx
+                        else:
+                            i_m = i-side_bond_size
+                            i_p = i+side_bond_size
+                        if str(i_m)+','+str(j)+','+str(k) in inv_tot_atom_dict:
+                            i_m_num = inv_tot_atom_dict[str(i_m)+','+str(j)+','+str(k)]
+                            i_m_type = sim_grid[i_m,j,k]
+                        if str(i_p)+','+str(j)+','+str(k) in inv_tot_atom_dict:
+                            i_p_num = inv_tot_atom_dict[str(i_p)+','+str(j)+','+str(k)]
+                            i_p_type = sim_grid[i_p,j,k]
+                        if j < bond_size:
+                            j_m = Ly-side_bond_size-j 
+                            j_p = j+side_bond_size
+                        elif j > Ly-side_bond_size-1:
+                            j_m = j-side_bond_size
+                            j_p = j+side_bond_size-Ly
+                        else:
+                            j_m = j-side_bond_size
+                            j_p = j+side_bond_size
+                        if str(i)+','+str(j_m)+','+str(k) in inv_tot_atom_dict:
+                            j_m_num = inv_tot_atom_dict[str(i)+','+str(j_m)+','+str(k)]
+                            j_m_type = sim_grid[i,j_m,k]
+                        if str(i)+','+str(j_p)+','+str(k) in inv_tot_atom_dict:
+                            j_p_num = inv_tot_atom_dict[str(i)+','+str(j_p)+','+str(k)]
+                            j_p_type = sim_grid[i,j_p,k]
+                        if k < bond_size:
+                            k_m = top_bound-bond_size-k 
+                            k_p = k+bond_size
+                        elif k > top_bound-bond_size-1:
+                            k_m = k-bond_size
+                            k_p = i+bond_size-top_bound
+                        else:
+                            k_m = k-bond_size
+                            k_p = k+bond_size
+                        if str(i)+','+str(j)+','+str(k_m) in inv_tot_atom_dict:
+                            k_m_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k_m)]
+                            k_m_type = sim_grid[i,j,k_m]
+                        if str(i)+','+str(j)+','+str(k_p) in inv_tot_atom_dict:
+                            k_p_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k_p)]
+                            k_p_type = sim_grid[i,j,k_p]
                     #Add bonds to dictionary
-                    if curr_type in chain_list and i_m_type in chain_list:
-                        bond_dict[bond_count] = str(curr_num)+','+str(i_m_num)
-                        bond_count += 1
-                    if curr_type in chain_list and i_p_type in chain_list:
-                        bond_dict[bond_count] = str(curr_num)+','+str(i_p_num)
-                        bond_count += 1
-                    if curr_type in chain_list and j_m_type in chain_list:
-                        bond_dict[bond_count] = str(curr_num)+','+str(j_m_num)
-                        bond_count += 1
-                    if curr_type in chain_list and j_p_type in chain_list:
-                        bond_dict[bond_count] = str(curr_num)+','+str(j_p_num)
-                        bond_count += 1
-                    if curr_type in chain_list and k_m_type in chain_list:
-                        bond_dict[bond_count] = str(curr_num)+','+str(k_m_num)
-                        bond_count += 1
-                    if curr_type in chain_list and k_p_type in chain_list:
-                        bond_dict[bond_count] = str(curr_num)+','+str(k_p_num)
-                        bond_count += 1                        
-                else:
-                    continue
+                        if curr_type in chain_list and i_m_type in chain_list:
+                            bond_dict[bond_count] = str(curr_num)+','+str(i_m_num)
+                            bond_count += 1
+                        if curr_type in chain_list and i_p_type in chain_list:
+                            bond_dict[bond_count] = str(curr_num)+','+str(i_p_num)
+                            bond_count += 1
+                        if curr_type in chain_list and j_m_type in chain_list:
+                            bond_dict[bond_count] = str(curr_num)+','+str(j_m_num)
+                            bond_count += 1
+                        if curr_type in chain_list and j_p_type in chain_list:
+                            bond_dict[bond_count] = str(curr_num)+','+str(j_p_num)
+                            bond_count += 1
+                        if curr_type in chain_list and k_m_type in chain_list:
+                            bond_dict[bond_count] = str(curr_num)+','+str(k_m_num)
+                            bond_count += 1
+                        if curr_type in chain_list and k_p_type in chain_list:
+                            bond_dict[bond_count] = str(curr_num)+','+str(k_p_num)
+                            bond_count += 1                        
+                    else:
+                        continue
+    elif branch_choice == 'no':
+        bond_count = 1
+        bond_dict = {}
+        for i in range(Lx):
+            for j in range(Ly):
+                for k in range(top_bound/2):
+                    if sim_grid[i,j,k] != '' and sim_grid[i,j,k] != 'p' and sim_grid[i,j,k] != 'n' and sim_grid[i,j,k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j,k] != 'd':
+                        curr_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k)]
+                        curr_type = sim_grid[i,j,k]
+                        k_p_num = ''
+                        k_p_type = ''
+                        if k < bond_size:
+                            k_p = k+bond_size
+                        elif k > top_bound-bond_size-1:
+                            k_p = i+bond_size-top_bound
+                        else:
+                            k_p = k+bond_size
+                        if str(i)+','+str(j)+','+str(k_p) in inv_tot_atom_dict:
+                            k_p_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k_p)]
+                            k_p_type = sim_grid[i,j,k_p]
+                    #Add bonds to dictionary
+                        if curr_type in chain_list and k_p_type in chain_list:
+                            bond_dict[bond_count] = str(curr_num)+','+str(k_p_num)
+                            bond_count += 1                        
+                    else:
+                        continue
+
     return bond_dict,bond_count
 
-def angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,side_bond_size):
-    angle_count = 1
-    lin_angle_dict = {}
-    per_angle_dict = {}
-    for i in range(Lx):
-        for j in range(Ly):
+def angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,side_bond_size,branch_choice):
+    if branch_choice == 'yes':
+        angle_count = 1
+        lin_angle_dict = {}
+        per_angle_dict = {}
+        for i in range(Lx):
+            for j in range(Ly):
             #Starting at 3 in the z direction ensures that the angle potentials don't connect to the substrate
             #Start k at 1 if you want it to connect through the substrate
-            for k in range(3,top_bound/2):
-                if sim_grid[i,j,k] != '' and sim_grid[i,j,k] != 'p' and sim_grid[i,j,k] != 'n' and sim_grid[i,j,k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j,k] != 'd':
-                    curr_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k)]
-                    curr_type = sim_grid[i,j,k]
-                    i_m_num = ''
-                    i_m_type = ''
-                    i_p_num = ''
-                    i_p_type = ''
-                    j_m_num = ''
-                    j_m_type = ''
-                    j_p_num = ''
-                    j_p_type = ''
-                    k_m_num = ''
-                    k_m_type = ''
-                    k_p_num = ''
-                    k_p_type = ''
-                    if i < side_bond_size:
-                        i_m = Lx-side_bond_size-i 
-                        i_p = i+side_bond_size
-                    elif i > Lx-side_bond_size-1:
-                        i_m = i-side_bond_size
-                        i_p = i+side_bond_size-Lx
-                    else:
-                        i_m = i-side_bond_size
-                        i_p = i+side_bond_size
-                    if str(i_m)+','+str(j)+','+str(k) in inv_tot_atom_dict:
-                        i_m_num = inv_tot_atom_dict[str(i_m)+','+str(j)+','+str(k)]
-                        i_m_type = sim_grid[i_m,j,k]
-                    if str(i_p)+','+str(j)+','+str(k) in inv_tot_atom_dict:
-                        i_p_num = inv_tot_atom_dict[str(i_p)+','+str(j)+','+str(k)]
-                        i_p_type = sim_grid[i_p,j,k]
-                    if j < side_bond_size:
-                        j_m = Ly-side_bond_size-j 
-                        j_p = j+side_bond_size
-                    elif j > Ly-side_bond_size-1:
-                        j_m = j-side_bond_size
-                        j_p = j+side_bond_size-Ly
-                    else:
-                        j_m = j-side_bond_size
-                        j_p = j+side_bond_size
-                    if str(i)+','+str(j_m)+','+str(k) in inv_tot_atom_dict:
-                        j_m_num = inv_tot_atom_dict[str(i)+','+str(j_m)+','+str(k)]
-                        j_m_type = sim_grid[i,j_m,k]
-                    if str(i)+','+str(j_p)+','+str(k) in inv_tot_atom_dict:
-                        j_p_num = inv_tot_atom_dict[str(i)+','+str(j_p)+','+str(k)]
-                        j_p_type = sim_grid[i,j_p,k]
-                    if k < bond_size:
-                        k_m = top_bound-bond_size-k 
-                        k_p = k+bond_size
-                    elif k > top_bound-bond_size-1:
-                        k_m = k-bond_size
-                        k_p = i+bond_size-top_bound
-                    else:
-                        k_m = k-bond_size
-                        k_p = k+bond_size
-                    if str(i)+','+str(j)+','+str(k_m) in inv_tot_atom_dict:
-                        k_m_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k_m)]
-                        k_m_type = sim_grid[i,j,k_m]
-                    if str(i)+','+str(j)+','+str(k_p) in inv_tot_atom_dict:
-                        k_p_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k_p)]
-                        k_p_type = sim_grid[i,j,k_p]
+                for k in range(3,top_bound/2):
+                    if sim_grid[i,j,k] != '' and sim_grid[i,j,k] != 'p' and sim_grid[i,j,k] != 'n' and sim_grid[i,j,k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j,k] != 'd':
+                        curr_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k)]
+                        curr_type = sim_grid[i,j,k]
+                        i_m_num = ''
+                        i_m_type = ''
+                        i_p_num = ''
+                        i_p_type = ''
+                        j_m_num = ''
+                        j_m_type = ''
+                        j_p_num = ''
+                        j_p_type = ''
+                        k_m_num = ''
+                        k_m_type = ''
+                        k_p_num = ''
+                        k_p_type = ''
+                        if i < side_bond_size:
+                            i_m = Lx-side_bond_size-i 
+                            i_p = i+side_bond_size
+                        elif i > Lx-side_bond_size-1:
+                            i_m = i-side_bond_size
+                            i_p = i+side_bond_size-Lx
+                        else:
+                            i_m = i-side_bond_size
+                            i_p = i+side_bond_size
+                        if str(i_m)+','+str(j)+','+str(k) in inv_tot_atom_dict:
+                            i_m_num = inv_tot_atom_dict[str(i_m)+','+str(j)+','+str(k)]
+                            i_m_type = sim_grid[i_m,j,k]
+                        if str(i_p)+','+str(j)+','+str(k) in inv_tot_atom_dict:
+                            i_p_num = inv_tot_atom_dict[str(i_p)+','+str(j)+','+str(k)]
+                            i_p_type = sim_grid[i_p,j,k]
+                        if j < side_bond_size:
+                            j_m = Ly-side_bond_size-j 
+                            j_p = j+side_bond_size
+                        elif j > Ly-side_bond_size-1:
+                            j_m = j-side_bond_size
+                            j_p = j+side_bond_size-Ly
+                        else:
+                            j_m = j-side_bond_size
+                            j_p = j+side_bond_size
+                        if str(i)+','+str(j_m)+','+str(k) in inv_tot_atom_dict:
+                            j_m_num = inv_tot_atom_dict[str(i)+','+str(j_m)+','+str(k)]
+                            j_m_type = sim_grid[i,j_m,k]
+                        if str(i)+','+str(j_p)+','+str(k) in inv_tot_atom_dict:
+                            j_p_num = inv_tot_atom_dict[str(i)+','+str(j_p)+','+str(k)]
+                            j_p_type = sim_grid[i,j_p,k]
+                        if k < bond_size:
+                            k_m = top_bound-bond_size-k 
+                            k_p = k+bond_size
+                        elif k > top_bound-bond_size-1:
+                            k_m = k-bond_size
+                            k_p = i+bond_size-top_bound
+                        else:
+                            k_m = k-bond_size
+                            k_p = k+bond_size
+                        if str(i)+','+str(j)+','+str(k_m) in inv_tot_atom_dict:
+                            k_m_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k_m)]
+                            k_m_type = sim_grid[i,j,k_m]
+                        if str(i)+','+str(j)+','+str(k_p) in inv_tot_atom_dict:
+                            k_p_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k_p)]
+                            k_p_type = sim_grid[i,j,k_p]
                     #Add angles to dictionary
                     #Form all angle potentials along linear chain segments
-                    if curr_type in chain_list and i_m_type in chain_list and i_p_type in chain_list:
-                        lin_angle_dict[angle_count] = str(i_m_num)+','+str(curr_num)+','+str(i_p_num)
+                        if curr_type in chain_list and i_m_type in chain_list and i_p_type in chain_list:
+                            lin_angle_dict[angle_count] = str(i_m_num)+','+str(curr_num)+','+str(i_p_num)
+                            angle_count += 1
+                        if curr_type in chain_list and j_m_type in chain_list and j_p_type in chain_list:
+                            lin_angle_dict[angle_count] = str(j_m_num)+','+str(curr_num)+','+str(j_p_num)
                         angle_count += 1
-                    if curr_type in chain_list and j_m_type in chain_list and j_p_type in chain_list:
-                        lin_angle_dict[angle_count] = str(j_m_num)+','+str(curr_num)+','+str(j_p_num)
-                        angle_count += 1
-                    if curr_type in chain_list and k_m_type in chain_list and k_p_type in chain_list:
-                        lin_angle_dict[angle_count] = str(k_m_num)+','+str(curr_num)+','+str(k_p_num)
-                        angle_count += 1
+                        if curr_type in chain_list and k_m_type in chain_list and k_p_type in chain_list:
+                            lin_angle_dict[angle_count] = str(k_m_num)+','+str(curr_num)+','+str(k_p_num)
+                            angle_count += 1
                     #Form all angle potential at branch points
-                    if curr_type in chain_list and i_m_type in chain_list and k_m_type in chain_list:
-                        per_angle_dict[angle_count] = str(i_m_num)+','+str(curr_num)+','+str(k_m_num)
-                        angle_count += 1
-                    if curr_type in chain_list and i_p_type in chain_list and k_m_type in chain_list:
-                        per_angle_dict[angle_count] = str(i_p_num)+','+str(curr_num)+','+str(k_m_num)
-                        angle_count += 1
-                    if curr_type in chain_list and j_m_type in chain_list and k_m_type in chain_list:
-                        per_angle_dict[angle_count] = str(j_m_num)+','+str(curr_num)+','+str(k_m_num)
-                        angle_count += 1
-                    if curr_type in chain_list and j_p_type in chain_list and k_m_type in chain_list:
-                        per_angle_dict[angle_count] = str(j_p_num)+','+str(curr_num)+','+str(k_m_num)
-                        angle_count += 1
-                    if curr_type in chain_list and i_m_type in chain_list and k_p_type in chain_list:
-                        per_angle_dict[angle_count] = str(i_m_num)+','+str(curr_num)+','+str(k_p_num)
-                        angle_count += 1
-                    if curr_type in chain_list and i_p_type in chain_list and k_p_type in chain_list:
-                        per_angle_dict[angle_count] = str(i_p_num)+','+str(curr_num)+','+str(k_p_num)
-                        angle_count += 1
-                    if curr_type in chain_list and j_m_type in chain_list and k_p_type in chain_list:
-                        per_angle_dict[angle_count] = str(j_m_num)+','+str(curr_num)+','+str(k_p_num)
-                        angle_count += 1
-                    if curr_type in chain_list and j_p_type in chain_list and k_p_type in chain_list:
-                        per_angle_dict[angle_count] = str(j_p_num)+','+str(curr_num)+','+str(k_p_num)
-                        angle_count += 1
-                else:
-                    continue
+                        if curr_type in chain_list and i_m_type in chain_list and k_m_type in chain_list:
+                            per_angle_dict[angle_count] = str(i_m_num)+','+str(curr_num)+','+str(k_m_num)
+                            angle_count += 1
+                        if curr_type in chain_list and i_p_type in chain_list and k_m_type in chain_list:
+                            per_angle_dict[angle_count] = str(i_p_num)+','+str(curr_num)+','+str(k_m_num)
+                            angle_count += 1
+                        if curr_type in chain_list and j_m_type in chain_list and k_m_type in chain_list:
+                            per_angle_dict[angle_count] = str(j_m_num)+','+str(curr_num)+','+str(k_m_num)
+                            angle_count += 1
+                        if curr_type in chain_list and j_p_type in chain_list and k_m_type in chain_list:
+                            per_angle_dict[angle_count] = str(j_p_num)+','+str(curr_num)+','+str(k_m_num)
+                            angle_count += 1
+                        if curr_type in chain_list and i_m_type in chain_list and k_p_type in chain_list:
+                            per_angle_dict[angle_count] = str(i_m_num)+','+str(curr_num)+','+str(k_p_num)
+                            angle_count += 1
+                        if curr_type in chain_list and i_p_type in chain_list and k_p_type in chain_list:
+                            per_angle_dict[angle_count] = str(i_p_num)+','+str(curr_num)+','+str(k_p_num)
+                            angle_count += 1
+                        if curr_type in chain_list and j_m_type in chain_list and k_p_type in chain_list:
+                            per_angle_dict[angle_count] = str(j_m_num)+','+str(curr_num)+','+str(k_p_num)
+                            angle_count += 1
+                        if curr_type in chain_list and j_p_type in chain_list and k_p_type in chain_list:
+                            per_angle_dict[angle_count] = str(j_p_num)+','+str(curr_num)+','+str(k_p_num)
+                            angle_count += 1
+                    else:
+                        continue
+    elif branch_choice == 'no':
+        angle_count = 1
+        lin_angle_dict = {}
+        per_angle_dict = {}
+        for i in range(Lx):
+            for j in range(Ly):
+            #Starting at 3 in the z direction ensures that the angle potentials don't connect to the substrate
+            #Start k at 1 if you want it to connect through the substrate
+                for k in range(3,top_bound/2):
+                    if sim_grid[i,j,k] != '' and sim_grid[i,j,k] != 'p' and sim_grid[i,j,k] != 'n' and sim_grid[i,j,k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j,k] != 'd':
+                        curr_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k)]
+                        curr_type = sim_grid[i,j,k]
+                        k_m_num = ''
+                        k_m_type = ''
+                        k_p_num = ''
+                        k_p_type = ''
+                        if k < bond_size:
+                            k_m = top_bound-bond_size-k 
+                            k_p = k+bond_size
+                        elif k > top_bound-bond_size-1:
+                            k_m = k-bond_size
+                            k_p = i+bond_size-top_bound
+                        else:
+                            k_m = k-bond_size
+                            k_p = k+bond_size
+                        if str(i)+','+str(j)+','+str(k_m) in inv_tot_atom_dict:
+                            k_m_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k_m)]
+                            k_m_type = sim_grid[i,j,k_m]
+                        if str(i)+','+str(j)+','+str(k_p) in inv_tot_atom_dict:
+                            k_p_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k_p)]
+                            k_p_type = sim_grid[i,j,k_p]
+                    #Add angles to dictionary
+                    #Form all angle potentials along linear chain segments
+                        if curr_type in chain_list and k_m_type in chain_list and k_p_type in chain_list:
+                            lin_angle_dict[angle_count] = str(k_m_num)+','+str(curr_num)+','+str(k_p_num)
+                            angle_count += 1
+                    #Form all angle potential at branch points
+                    else:
+                        continue
     return lin_angle_dict,per_angle_dict,angle_count
     
 def merge_two_dicts(x,y):

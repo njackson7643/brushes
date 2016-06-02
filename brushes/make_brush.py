@@ -27,7 +27,7 @@ substr_len = int(input_param['substr_len'])
 lat_spacing = float(input_param['lat_spacing'])
 chain_len = int(input_param['chain_len'])
 poly_bond_len = float(input_param['poly_bond_len'])
-grid_disc = 0.5 #each grid spacing corresponds to 0.1 LJ sigma
+grid_disc = 1.0 #each grid spacing corresponds to 0.1 LJ sigma
 inv_grid_disc = 1.0/grid_disc
 part_per_1D = int(substr_len) #Number of substrate sites per Lx
 abs_len = int(substr_len*lat_spacing) #Absolute length of Lx/Ly axes of simulation grid in LJ sigma
@@ -67,6 +67,9 @@ grid_graft_dens_2D = float(num_chain/(substr_len*lat_spacing/grid_disc)**2)
 grid_graft_dens_1D = math.sqrt(grid_graft_dens_2D)
 chain_sep_1D = int(1.0/grid_graft_dens_1D)
 
+print "The 1D grafting density is: "+str(grid_graft_dens_1D)+"\n"
+print "The 1D chain separation is: "+str(chain_sep_1D)+"\n"
+
 print "There are "+str(num_chain)+" chains spread over "+str(substr_len**2)+" substrate sites."
 print "This corresponds to 1 chain every "+str(chain_sep_1D)+" grid sites, and an absolute"
 print "grafting density of "+str(round(abs_graft_dens_2D,3))+" sites/(LJ dist)**2" 
@@ -95,6 +98,10 @@ side_bond_size = bond_size/bond_scale
 P_dict = {}
 N_dict = {}
 Z_dict = {}
+
+print "Building brush..."
+
+
 if branch_choice == "no":
 #offset = int(substr_len%(int(math.sqrt(num_chain))))
     for i in range(offset,Lx,chain_sep_1D):
@@ -114,6 +121,7 @@ if branch_choice == "no":
                 elif sim_grid[i,j,k] == "Z":
                     Z_count += 1
                     Z_dict[Z_count] = str(i)+','+str(j)+','+str(k)
+
 
 ##3b.Place branched polymer with neutral backbone and the sequence on the sidechain
 elif branch_choice == 'yes':
@@ -235,7 +243,7 @@ ctr_list = p_ctr_list + n_ctr_list + Sp_list_1 + Sn_list_1 + Sp_list_2 + Sn_list
 for i in range(5):
     ctr_list = random.sample(ctr_list,len(ctr_list))
 
-
+print 'Solvating counterions and salts...'
 #PLACE COUNTERIONS RANDOMLY INTO THE EMPTY SPACES OF THE SIMULATION GRID
 while len(ctr_list) > 0:
     xrand = random.randint(bond_size,Lx-bond_size)
@@ -326,12 +334,17 @@ PN_count = 0
 #Create new dictionary that contains all neighbors to which it is bonded
 bond_count = 1
 
-bond_dict,bond_count = bond_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,side_bond_size)
+bond_dict,bond_count = bond_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,side_bond_size,branch_choice)
+
+print 'Removing redundant bond definitions...'
 
 #Remove redundant bond definitions
 rev_bond_dict = {}
 new_count = 0
+print len(bond_dict)
 for i in range(1,len(bond_dict)+1,1):
+    if i%1000 == 0:
+        print float(i)/len(bond_dict)
     curr = bond_dict[i].split(',')
     val1 = curr[0]
     val2 = curr[1]
@@ -341,13 +354,18 @@ for i in range(1,len(bond_dict)+1,1):
         new_count += 1
         rev_bond_dict[new_count] = val1+','+val2 
 
+print len(rev_bond_dict)
+
+print 'Building angle dict'
+
 #create new dictionary that contains all angles in the system
 angle_count = 1
-lin_angle_dict,per_angle_dict,angle_count = angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,side_bond_size)
+lin_angle_dict,per_angle_dict,angle_count = angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,side_bond_size,branch_choice)
 
 
 angle_dict = merge_two_dicts(lin_angle_dict,per_angle_dict)
 
+print 'Removing redundant angle definitions...'
 
 #Remove redundant angle definitions
 rev_angle_dict = {}
@@ -383,7 +401,7 @@ print "Total atoms \t "+str(S_count+Z_count+P_count+N_count+p_count+n_count+a_co
 
 #PLOT THE ENTIRE SIMULATION BOX
 #poly_size, ctr_size, and salt_size are all specification for the size of the plotted points below.
-
+"""
 poly_size = 20
 ctr_size = 5
 salt_size = 30
@@ -431,12 +449,12 @@ for i in range(1,len(rev_bond_dict)+1,1):
     z2 = grid_disc*float(xyz_2[2])
     ax.plot([x1,x2],[y1,y2],[z1,z2],linewidth=line_thick,c='black')
 
-ax.view_init(elev=0.,azim=45)
+ax.view_init(elev=0.,azim=0)
 ax.set_xlim3d(0,Lx*grid_disc/2)
 ax.set_ylim3d(0,Lx*grid_disc/2)
-ax.set_zlim3d(0,top_bound*grid_disc)
+ax.set_zlim3d(0,top_bound*grid_disc*0.2)
 plt.show()
-
+"""
 num_atom = S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count+c_count+d_count
 
 #Actually write the .data file
