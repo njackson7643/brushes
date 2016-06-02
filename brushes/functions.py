@@ -7,7 +7,7 @@ def setup_parser(filename):
     if os.path.isfile(filename) == False:
         print "Could not locate "+str(filename)+", exiting program..."
         sys.exit()
-    keys = ['num_chain','chain_len','substr_len','substr_patt','chain_typ','equil_steps','sample_steps','tstep','temp','lat_spacing','poly_LJ','ctr_cat_chg','ctr_ani_chg','ctr_cat_LJ','ctr_ani_LJ','salt_cat_chg_1','salt_ani_chg_1','salt_cat_LJ_1','salt_ani_LJ_1','poly_bond_len','branch','branch_rep','branch_alt','salt_conc_1','P_mass','N_mass','Z_mass','P_LJ','N_LJ','Z_LJ','ctr_ani_mass','ctr_cat_mass','salt_ani_mass_1','salt_cat_mass_1','S_mass','S_chg','S_LJ','Z_chg','P_chg','N_chg','poly_bond_k','poly_ang_theta_lin','poly_ang_theta_per','poly_ang_k_lin','poly_ang_k_per','dump_int','FENE_max_len','dielectric','salt_conc_2','salt_cat_chg_2','salt_ani_chg_2','salt_cat_LJ_2','salt_ani_LJ_2','salt_cat_mass_2','salt_ani_mass_2']
+    keys = ['num_chain','chain_len','substr_len','substr_patt','chain_typ','equil_steps','sample_steps','tstep','temp','lat_spacing','poly_LJ','ctr_cat_chg','ctr_ani_chg','ctr_cat_LJ','ctr_ani_LJ','salt_cat_chg_1','salt_ani_chg_1','salt_cat_LJ_1','salt_ani_LJ_1','poly_bond_len','branch','branch_rep','branch_alt','salt_conc_1','P_mass','N_mass','Z_mass','P_LJ','N_LJ','Z_LJ','ctr_ani_mass','ctr_cat_mass','salt_ani_mass_1','salt_cat_mass_1','S_mass','S_chg','S_LJ','Z_chg','P_chg','N_chg','poly_bond_k','poly_ang_theta_lin','poly_ang_theta_per','poly_ang_k_lin','poly_ang_k_per','dump_int','FENE_max_len','dielectric','salt_conc_2','salt_cat_chg_2','salt_ani_chg_2','salt_cat_LJ_2','salt_ani_LJ_2','salt_cat_mass_2','salt_ani_mass_2','thermo_step']
     indices = list(range(len(keys)))
     hash = {k:i for k,i in zip(keys,indices)}
     input_param = range(len(keys))
@@ -177,7 +177,7 @@ def write_settings(filename,LJ_dict,atom_type_list,lin_angle_dict,per_angle_dict
     if len(lin_angle_dict)+len(per_angle_dict) != len(lin_angle_dict):
         wfile.write("angle_coeff 2 "+angle_coeff_dict['per'].split(',')[0]+" "+angle_coeff_dict['per'].split(',')[1]+"\n")
 
-def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_type_list,dump_int,dielectric):
+def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_type_list,dump_int,dielectric,thermo_step):
     vel_seed1 = random.randint(1,99999999)
     vel_seed2 = random.randint(1,99999999)
     wfile = open(filename,'w')
@@ -188,7 +188,7 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("#------------- Settings Section ----------- \n\n")
     wfile.write("include "+'"'+filename[:-3]+'.settings"\n')
     wfile.write("#------------- Run Section ----------- \n\n")
-    wfile.write("thermo 100\n")
+    wfile.write("thermo "+str(thermo_step)+"\n")
     wfile.write("run_style verlet\n")
     wfile.write("timestep "+str(tstep)+"\n\n")
     wfile.write("#SIMULATION BOX FIXES\n\n")
@@ -230,8 +230,8 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("unfix poly_hold\n\n")
     wfile.write("#Initial Safe Equilibration to remove bad contacts\n")
     wfile.write("velocity not_substr create "+str(temp)+" "+str(vel_seed1)+"\n")
-    wfile.write("fix temper not_substr nve\limit 0.1\n")
-    wfile.write("fix temper2  not_substr langevin "+str(temp)+" "+str(temp)+" 100.0 986537\n")
+    wfile.write("fix temper not_substr nve/limit 0.1\n")
+    wfile.write("fix temper2 not_substr langevin "+str(temp)+" "+str(temp)+" 100.0 986537\n")
     wfile.write("fix rescale0 not_substr temp/rescale 2 1.0 1.0 0.2 1.0\n")
     wfile.write("dump 1 dump_group custom "+str(dump_int)+" equil.trj id type x y z\n")
     wfile.write("run "+str(equil_steps)+"\n")

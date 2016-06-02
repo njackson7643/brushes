@@ -248,7 +248,8 @@ print 'Solvating counterions and salts...'
 while len(ctr_list) > 0:
     xrand = random.randint(bond_size,Lx-bond_size)
     yrand = random.randint(bond_size,Ly-bond_size)
-    zrand = random.randint(bond_size,top_bound-bond_size)
+    zrand = random.randint(bond_size,int(0.52*top_bound))
+
     if sim_grid[xrand,yrand,zrand] == '':
         sim_grid[xrand,yrand,zrand] = ctr_list.pop()
         if sim_grid[xrand,yrand,zrand] == 'p':
@@ -341,20 +342,19 @@ print 'Removing redundant bond definitions...'
 #Remove redundant bond definitions
 rev_bond_dict = {}
 new_count = 0
-print len(bond_dict)
-for i in range(1,len(bond_dict)+1,1):
-    if i%1000 == 0:
-        print float(i)/len(bond_dict)
-    curr = bond_dict[i].split(',')
-    val1 = curr[0]
-    val2 = curr[1]
-    if val1+','+val2 in rev_bond_dict.values() or val2+','+val1 in rev_bond_dict.values():
-        continue
-    else:
-        new_count += 1
-        rev_bond_dict[new_count] = val1+','+val2 
+if branch_choice == 'yes':
+    for i in range(1,len(bond_dict)+1,1):
+        if i%1000 == 0:
+            print float(i)/len(bond_dict)
+        curr = bond_dict[i].split(',')
+        val1 = curr[0]
+        val2 = curr[1]
+        if val1+','+val2 in rev_bond_dict.values() or val2+','+val1 in rev_bond_dict.values():
+            continue
+        else:
+            new_count += 1
+            rev_bond_dict[new_count] = val1+','+val2 
 
-print len(rev_bond_dict)
 
 print 'Building angle dict'
 
@@ -368,24 +368,26 @@ angle_dict = merge_two_dicts(lin_angle_dict,per_angle_dict)
 print 'Removing redundant angle definitions...'
 
 #Remove redundant angle definitions
+
 rev_angle_dict = {}
 new_count = 0
-for i in range(1,len(angle_dict)+1,1):
-    curr = angle_dict[i].split(',')
-    val1 = curr[0]
-    val2 = curr[1]
-    val3 = curr[2]
-    if val1+','+val2+','+val3 in rev_angle_dict.values() or val3+','+val2+','+val1 in rev_angle_dict.values():
-        continue
-    else:
-        new_count += 1
-        rev_angle_dict[new_count] = val1+','+val2+','+val3 
+if branch_choice == 'yes':
+    for i in range(1,len(angle_dict)+1,1):
+        curr = angle_dict[i].split(',')
+        val1 = curr[0]
+        val2 = curr[1]
+        val3 = curr[2]
+        if val1+','+val2+','+val3 in rev_angle_dict.values() or val3+','+val2+','+val1 in rev_angle_dict.values():
+            continue
+        else:
+            new_count += 1
+            rev_angle_dict[new_count] = val1+','+val2+','+val3 
 
-print 'The bond search algorithm found '+str(len(rev_bond_dict))+' bonds'
+print 'The bond search algorithm found '+str(len(bond_dict))+' bonds'
 print 'The angle search algorithm found '+str(len(angle_dict))+ ' angles'
 
 num_ang = len(angle_dict)
-num_bond = len(rev_bond_dict)
+num_bond = len(bond_dict)
 
 print "Substrate atoms \t "+str(S_count)
 print "poly atoms Z \t\t "+str(Z_count)
@@ -558,13 +560,13 @@ print "There are 0 angle types in this system."
 print "There are 0 dihedral types in this system."
 print "There are 0 improper types in this system."
 
-write_data('brush.data',num_atom,num_bond,num_ang,num_dih,num_imp,sim_grid,num_atom_type,num_bond_type,num_ang_type,num_dih_type,num_imp_type,Lx,Ly,top_bound,S_dict,Z_dict,P_dict,N_dict,p_dict,n_dict,a_dict,b_dict,c_dict,d_dict,S_count,Z_count,P_count,N_count,p_count,n_count,a_count,b_count,c_count,d_count,atom_typ_list,chg_dict,LJ_dict,m_dict,grid_disc,rev_bond_dict,lin_angle_dict,per_angle_dict,angle_coeff_dict)
+write_data('brush.data',num_atom,num_bond,num_ang,num_dih,num_imp,sim_grid,num_atom_type,num_bond_type,num_ang_type,num_dih_type,num_imp_type,Lx,Ly,top_bound,S_dict,Z_dict,P_dict,N_dict,p_dict,n_dict,a_dict,b_dict,c_dict,d_dict,S_count,Z_count,P_count,N_count,p_count,n_count,a_count,b_count,c_count,d_count,atom_typ_list,chg_dict,LJ_dict,m_dict,grid_disc,bond_dict,lin_angle_dict,per_angle_dict,angle_coeff_dict)
 
 write_init('brush.init')
 
 write_settings('brush.settings',LJ_dict,atom_typ_list,lin_angle_dict,per_angle_dict,angle_coeff_dict,input_param['poly_bond_len'],input_param['poly_bond_k'],input_param['FENE_max_len'])
 
-write_infile('brush.in',input_param['tstep'],input_param['equil_steps'],input_param['sample_steps'],input_param['temp'],input_param['substr_len'],atom_typ_list,input_param['dump_int'],input_param['dielectric'])
+write_infile('brush.in',input_param['tstep'],input_param['equil_steps'],input_param['sample_steps'],input_param['temp'],input_param['substr_len'],atom_typ_list,input_param['dump_int'],input_param['dielectric'],input_param['thermo_step'])
 #Write .init file
 
 #Write .settings file
