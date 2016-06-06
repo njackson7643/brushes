@@ -1,17 +1,18 @@
 #Total Number of Chains to be grafted onto substrate
-num_chain = 225
+num_chain = 4
 #Molecular weight of chains grafted to substrate (# of monomers)
-chain_len = 40
+chain_len = 3
 #Total number of substrate sites in one dimension
-substr_len = 30
+substr_len = 2
 #Arrangement of substrate sites
 substr_patt = cubic
 #Lattice spacing between substrate sites.  Must be a multiple of 0.1 LJ sigma.
-lat_spacing = 3.0
+lat_spacing = 10.0
 temp = 1.0
-equil_steps = 2000000
-sample_steps = 1000000
-dump_int = 50000
+equil_steps = 100000
+sample_steps = 100000
+dump_int = 1
+thermo_step = 1
 tstep = 0.005
 dielectric = 1.0
 
@@ -63,9 +64,9 @@ ctr_ani_mass = 1.0
 ctr_cat_mass = 1.0
 
 #Salt particle features
-salt_conc_1 = 0.000001
+salt_conc_1 = 0.0
 salt_conc_2 = 0.0
-salt_cat_chg_1 = 1.0
+salt_cat_chg_1 = 3.0
 salt_ani_chg_1 = -1.0
 salt_cat_LJ_1 = 1.0,0.2
 salt_ani_LJ_1 = 1.0,0.2
@@ -82,3 +83,7 @@ salt_ani_mass_2 = 1.0
 S_LJ = 0.0,1.0
 S_mass = 1.0
 S_chg = 0.0
+
+#Two Apposing brushes.  Run make_sandwich.py instead of make_brush.py
+init_substr_sep = 10.0
+final_substr_sep = 10.0

@@ -320,7 +320,7 @@ def bond_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,si
                             k_p = k+bond_size
                         elif k > top_bound-bond_size-1:
                             k_m = k-bond_size
-                            k_p = i+bond_size-top_bound
+                            k_p = k+bond_size-top_bound
                         else:
                             k_m = k-bond_size
                             k_p = k+bond_size
@@ -440,7 +440,7 @@ def angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,s
                             k_p = k+bond_size
                         elif k > top_bound-bond_size-1:
                             k_m = k-bond_size
-                            k_p = i+bond_size-top_bound
+                            k_p = k+bond_size-top_bound
                         else:
                             k_m = k-bond_size
                             k_p = k+bond_size
@@ -496,7 +496,7 @@ def angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,s
             for j in range(Ly):
             #Starting at 3 in the z direction ensures that the angle potentials don't connect to the substrate
             #Start k at 1 if you want it to connect through the substrate
-                for k in range(3,top_bound/2):
+                for k in range(2,top_bound/2):
                     if sim_grid[i,j,k] != '' and sim_grid[i,j,k] != 'p' and sim_grid[i,j,k] != 'n' and sim_grid[i,j,k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j,k] != 'd':
                         curr_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k)]
                         curr_type = sim_grid[i,j,k]
@@ -509,7 +509,7 @@ def angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,s
                             k_p = k+bond_size
                         elif k > top_bound-bond_size-1:
                             k_m = k-bond_size
-                            k_p = i+bond_size-top_bound
+                            k_p = k+bond_size-top_bound
                         else:
                             k_m = k-bond_size
                             k_p = k+bond_size
@@ -521,6 +521,8 @@ def angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,s
                             k_p_type = sim_grid[i,j,k_p]
                     #Add angles to dictionary
                     #Form all angle potentials along linear chain segments
+                        print i,j,k
+                        print curr_type,k_m_type,k_p_type
                         if curr_type in chain_list and k_m_type in chain_list and k_p_type in chain_list:
                             lin_angle_dict[angle_count] = str(k_m_num)+','+str(curr_num)+','+str(k_p_num)
                             angle_count += 1

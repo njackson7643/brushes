@@ -342,6 +342,7 @@ print 'Building angle dict'
 angle_count = 1
 lin_angle_dict,per_angle_dict,angle_count = angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,side_bond_size,branch_choice)
 
+print len(lin_angle_dict),len(per_angle_dict)
 
 angle_dict = merge_two_dicts(lin_angle_dict,per_angle_dict)
 
@@ -419,8 +420,8 @@ for i in range(Lx):
 
 #Plot all bonds
 line_thick = 2.
-for i in range(1,len(rev_bond_dict)+1,1):
-    curr = rev_bond_dict[i].split(',')
+for i in range(1,len(bond_dict)+1,1):
+    curr = bond_dict[i].split(',')
     xyz_1 = tot_atom_dict[int(curr[0])].split(',')
     xyz_2 = tot_atom_dict[int(curr[1])].split(',')
     x1 = grid_disc*float(xyz_1[0])
@@ -432,9 +433,9 @@ for i in range(1,len(rev_bond_dict)+1,1):
     ax.plot([x1,x2],[y1,y2],[z1,z2],linewidth=line_thick,c='black')
 
 ax.view_init(elev=0.,azim=0)
-ax.set_xlim3d(0,Lx*grid_disc/2)
-ax.set_ylim3d(0,Lx*grid_disc/2)
-ax.set_zlim3d(0,top_bound*grid_disc*0.2)
+ax.set_xlim3d(0,Lx*grid_disc)
+ax.set_ylim3d(0,Lx*grid_disc)
+ax.set_zlim3d(0,top_bound*grid_disc)
 plt.show()
 
 num_atom = S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count+c_count+d_count
@@ -547,16 +548,6 @@ write_init('brush.init')
 write_settings('brush.settings',LJ_dict,atom_typ_list,lin_angle_dict,per_angle_dict,angle_coeff_dict,input_param['poly_bond_len'],input_param['poly_bond_k'],input_param['FENE_max_len'])
 
 write_infile('brush.in',input_param['tstep'],input_param['equil_steps'],input_param['sample_steps'],input_param['temp'],input_param['substr_len'],atom_typ_list,input_param['dump_int'],input_param['dielectric'],input_param['thermo_step'])
-#Write .init file
-
-#Write .settings file
-
-#Write .in file
-
-#Define bottom substrate group and freeze particles.
-#Define top substrate group and freeze particles.
-#Define polymer group
-#Define counterion group
 
 
 
