@@ -56,7 +56,6 @@ for i in range(0,Lx,int(lat_spacing/grid_disc)):
         S_count += 1
         S_dict[S_count] = str(i)+','+str(j)+','+str(top_bound-1)
 
-
 #MAKE GRAFTED POLYMER CHAINS.  ASSUMES UNIFORM GRAFTING DENSITY ON CUBIC LATTICE
 num_chain = int(input_param['num_chain'])
 abs_graft_dens_2D = float(num_chain/(substr_len*lat_spacing*0.71)**2)
@@ -244,6 +243,7 @@ for i in range(1,d_count+1,1):
 
 #Invert this dictionary
 inv_tot_atom_dict = {v: k for k,v in tot_atom_dict.items()}
+
 
 #To correctly determine all of the bonds, need top add 'Z' to the chain_list
 
