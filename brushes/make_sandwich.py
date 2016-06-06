@@ -1,5 +1,5 @@
 import os
-from functions import *
+from functions_sand import *
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
@@ -26,7 +26,7 @@ substr_len = int(input_param['substr_len'])
 lat_spacing = float(input_param['lat_spacing'])
 chain_len = int(input_param['chain_len'])
 poly_bond_len = float(input_param['poly_bond_len'])
-grid_disc = 1.0
+grid_disc = 0.5
 inv_grid_disc = 1.0/grid_disc
 part_per_1D = int(substr_len)
 abs_len = int(substr_len*lat_spacing)
@@ -86,7 +86,8 @@ N_count = 0
 P_count = 0
 Z_count = 0
 bond_scale = 2
-side_bond_size = bond_size/bond_scale
+#RESCALE BOND_SIZE SO THAT I CAN PACK SHIT IN HERE. THIS IS PRETTY SKETCHY
+bond_size = bond_size/bond_scale
 
 ##3a.  Place purely linear polymers with the chain sequence purely along the backbone
 #Create dictionaries for holding P & N charge, mass, LJ, atom number information
@@ -120,7 +121,7 @@ if branch_choice == "no":
         seq_count = 0
         for j in range(offset,Ly,chain_sep_1D):
             seq_count = 0
-            for k in range(top_bound-2*bond_size,top_bound-poly_len-2,-bond_size):
+            for k in range(top_bound-2*bond_size,top_bound-2-poly_len,-bond_size):
                 num_bond += 1
                 sim_grid[i,j,k] = str(chain_list[seq_count%seq_len])
                 seq_count += 1
@@ -309,6 +310,7 @@ k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j
                 continue
 """
 
+
 #ANGLE FIND
 
 angle_count = 1
@@ -316,9 +318,9 @@ lin_angle_dict = {}
 per_angle_dict = {}
 for i in range(Lx):
     for j in range(Ly):
-            #Starting at 3 in the z direction ensures that the angle potentials don't connect to the substrate       
+            #Starting at 3 in the z direxction ensures that the angle potentials don't connect to the substrate       
             #Start k at 1 if you want it to connect through the substrate                                            
-        for k in range(2,top_bound/2):
+        for k in range(2,top_bound-2,1):
             if sim_grid[i,j,k] != '' and sim_grid[i,j,k] != 'p' and sim_grid[i,j,k] != 'n' and sim_grid[i,j,\
 k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j,k] != 'd':
                 curr_num = inv_tot_atom_dict[str(i)+','+str(j)+','+str(k)]
@@ -351,9 +353,7 @@ k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j
             else:
                 continue
 
-angle_count = 1
-lin_angle_dict = {}
-per_angle_dict = {}
+"""
 for i in range(Lx):
     for j in range(Ly):
             #Starting at 3 in the z direction ensures that the angle potentials don't connect to the substrate       
@@ -390,7 +390,7 @@ k] != 'a' and sim_grid[i,j,k] != 'b' and sim_grid[i,j,k] != 'c' and sim_grid[i,j
                     #Form all angle potential at branch points                                                       
             else:
                 continue
-
+"""
 
 angle_dict = merge_two_dicts(lin_angle_dict,per_angle_dict)
 
