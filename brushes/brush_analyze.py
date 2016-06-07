@@ -15,11 +15,11 @@ def round_partial(value,res):
 tot_sample = 0
 tot_atom = 0
 xmin = 0
-xmax = 20
+xmax = 75
 ymin = 0
-ymax = 20
+ymax = 75
 zmin = 0
-zmax = 62
+zmax = 82
 grid_size = 1.0
 
 #ANALYZE POLYMER TRAJECTORY FILE.  POLY_WRAP
@@ -240,8 +240,8 @@ for i in range(len(z_mean_arr)):
 
 #Analyze simulation energies from log.lammps
 
-dump_step = 100
-tot_steps = 3000000
+dump_step = 100000
+tot_steps = 2000000
 min_buffer = 30
 
 data_arr = np.zeros( (13,int(tot_steps/dump_step)+min_buffer) , dtype = float)

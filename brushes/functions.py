@@ -191,6 +191,7 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("thermo "+str(thermo_step)+"\n")
     wfile.write("run_style verlet\n")
     wfile.write("timestep "+str(tstep)+"\n\n")
+    wfile.write("restart 50000 brush.restart\n\n")
     wfile.write("#SIMULATION BOX FIXES\n\n")
     wfile.write("group substrates type 1 \n")
     wfile.write("group bot_substr id <= "+str(int(substr_len)**2)+'\n')
@@ -521,8 +522,6 @@ def angle_find(chain_list,sim_grid,inv_tot_atom_dict,Lx,Ly,top_bound,bond_size,s
                             k_p_type = sim_grid[i,j,k_p]
                     #Add angles to dictionary
                     #Form all angle potentials along linear chain segments
-                        print i,j,k
-                        print curr_type,k_m_type,k_p_type
                         if curr_type in chain_list and k_m_type in chain_list and k_p_type in chain_list:
                             lin_angle_dict[angle_count] = str(k_m_num)+','+str(curr_num)+','+str(k_p_num)
                             angle_count += 1

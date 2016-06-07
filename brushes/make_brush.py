@@ -384,7 +384,7 @@ print "Total atoms \t "+str(S_count+Z_count+P_count+N_count+p_count+n_count+a_co
 
 #PLOT THE ENTIRE SIMULATION BOX
 #poly_size, ctr_size, and salt_size are all specification for the size of the plotted points below.
-
+"""
 poly_size = 20
 ctr_size = 5
 salt_size = 30
@@ -437,7 +437,7 @@ ax.set_xlim3d(0,Lx*grid_disc)
 ax.set_ylim3d(0,Lx*grid_disc)
 ax.set_zlim3d(0,top_bound*grid_disc)
 plt.show()
-
+"""
 num_atom = S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count+c_count+d_count
 
 #Actually write the .data file
