@@ -238,9 +238,9 @@ for i in range(1,a_count+1,1):
 for i in range(1,b_count+1,1):
     tot_atom_dict[i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count] = b_dict[i]
 for i in range(1,c_count+1,1):
-    tot_atom_dict[i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count+c_count] = c_dict[i]
+    tot_atom_dict[i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count] = c_dict[i]
 for i in range(1,d_count+1,1):
-    tot_atom_dict[i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count+c_count+d_count] = d_dict[i]
+    tot_atom_dict[i+S_count+Z_count+P_count+N_count+p_count+n_count+a_count+b_count+c_count] = d_dict[i]
 
 #Invert this dictionary
 inv_tot_atom_dict = {v: k for k,v in tot_atom_dict.items()}
