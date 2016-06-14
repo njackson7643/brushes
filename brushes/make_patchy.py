@@ -344,7 +344,8 @@ while i < num_opp_sites:
 
 #wfile.close()
 
-bond_thresh = 1.2
+#NEED TO ADJUST THIS EVERY TIME
+bond_thresh = 1.4
 
 #Use a preliminary count of the number of bonds in the brush by multipling # of chains * chain molecular weight
 bond_num_est = chain_len*num_chain
