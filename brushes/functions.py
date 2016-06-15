@@ -241,7 +241,6 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("unfix temper\n")
     wfile.write("undump 1\n\n")
     wfile.write("#Run NVT Sampling\n")
-    wfile.write("velocity not_substr scale 1.2\n")
     wfile.write("fix 11 not_substr nve\n")
     wfile.write("fix 3 not_substr langevin "+str(temp)+" "+str(temp)+ " 100.0 "+str(vel_seed2)+"\n")
     wfile.write("dump 2 polymers custom "+str(dump_int)+" polymers.trj id type q xu yu zu\n")

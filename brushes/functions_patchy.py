@@ -202,7 +202,7 @@ def write_settings(filename,LJ_dict,atom_type_list,lin_angle_dict,per_angle_dict
     if len(lin_angle_dict)+len(per_angle_dict) != len(lin_angle_dict):
         wfile.write("angle_coeff 2 "+angle_coeff_dict['per'].split(',')[0]+" "+angle_coeff_dict['per'].split(',')[1]+"\n")
 
-def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_type_list,dump_int,dielectric,thermo_step):
+def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_type_list,dump_int,dielectric,thermo_step,Lx,Ly,top_bound,grid_disc):
     vel_seed1 = random.randint(1,99999999)
     vel_seed2 = random.randint(1,99999999)
     wfile = open(filename,'w')
@@ -243,7 +243,7 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
         wfile.write("group polymers type "+str(type_count)+":"+str(type_count+poly_typ)+"\n")
         type_count = type_count + poly_typ + 1 
     #WRITE COUNTERION GROUPS
-    wfile.write("group ctr_ion type "+str(type_count)+":"+str(type_count+1)+"\n")
+    wfile.write("group ctr_ions type "+str(type_count)+":"+str(type_count+1)+"\n")
     #WRITE SALT GROUPS
     type_count += 1
     if salt_typ != 0:
@@ -287,7 +287,8 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("fix wall1 not_substr wall/lj126 zlo EDGE 0.1 1.0 2.5 \n")
     wfile.write("fix wall2 not_substr wall/lj126 zhi EDGE 0.1 1.0 2.5 \n\n")
     wfile.write("compute real_temp not_substr temp\n")
-    wfile.write("thermo_style custom step dt c_real_temp press vol etotal ke pe ebond eangle evdwl ecoul elong\n\n")
+    wfile.write("compute COM patchy com\n")
+    wfile.write("thermo_style custom step dt c_COM[3] c_real_temp press vol etotal ke pe ebond eangle evdwl ecoul elong\n\n")
     wfile.write("#Minimize the simulation box. \n")
     wfile.write("fix poly_hold polymers setforce 0.0 0.0 0.0\n")
     wfile.write("minimize 1.0e-6 1.0e-6 2000 2000\n\n")
@@ -297,6 +298,7 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("fix temper not_substr nve/limit 0.1\n")
     wfile.write("fix temper2 not_substr langevin "+str(temp)+" "+str(temp)+" 100.0 986537\n")
     wfile.write("fix rescale0 not_substr temp/rescale 2 1.0 1.0 0.2 1.0\n")
+    wfile.write("fix umbrella patchy spring tether 1.0 "+str(Lx*grid_disc/2.)+" "+str(Ly*grid_disc/2.)+" "+str(top_bound*grid_disc/2.)+" 0.0\n")
     wfile.write("dump 1 dump_group custom "+str(dump_int)+" equil.trj id type x y z\n")
     wfile.write("run "+str(equil_steps)+"\n")
     wfile.write("unfix rescale0\n")
@@ -304,7 +306,6 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("unfix temper\n")
     wfile.write("undump 1\n\n")
     wfile.write("#Run NVT Sampling\n")
-    wfile.write("velocity not_substr scale 1.2\n")
     wfile.write("fix 11 not_substr nve\n")
     wfile.write("fix 3 not_substr langevin "+str(temp)+" "+str(temp)+ " 100.0 "+str(vel_seed2)+"\n")
     wfile.write("dump 2 polymers custom "+str(dump_int)+" polymers.trj id type q xu yu zu\n")
@@ -316,6 +317,7 @@ def write_infile(filename,tstep,equil_steps,sample_steps,temp,substr_len,atom_ty
     wfile.write("run "+str(sample_steps)+"\n")
     wfile.write("unfix 3\n")
     wfile.write("unfix 11\n")
+    wfile.write("unfix umbrella\n")
     wfile.write("undump 2\n\n")
     wfile.write("undump 55\n\n")
     if "P" in atom_type_list or "N" in atom_type_list:
