@@ -278,8 +278,8 @@ a_count = 0
 b_count = 0
 c_count = 0
 d_count = 0
-p_ctr_list = ['p'] * (N_count+patch_p_count)
-n_ctr_list = ['n'] * (P_count+patch_n_count)
+p_ctr_list = ['p'] * (N_count+patch_n_count)
+n_ctr_list = ['n'] * (P_count+patch_p_count)
 Sp_list_1 = ['a'] * tot_salt_cat_1
 Sn_list_1 = ['b'] * tot_salt_ani_1
 Sp_list_2 = ['c'] * tot_salt_cat_2
@@ -351,7 +351,7 @@ bond_thresh = 1.4
 bond_num_est = chain_len*num_chain
 atom_num_est = num_brush_atom
 
-fin_part_list = rest_list+patch1+opp_site_list
+fin_part_list = rest_list+opp_site_list+patch1
 dist_check = scipy.spatial.distance.cdist(fin_part_list,fin_part_list)
 patch_bond_dict = {}
 patch_len_dict = {}
@@ -374,8 +374,8 @@ num_bond = len(patch_bond_dict)
 print "There are "+str(num_bond)+" associated with the patchy particle"
 
 e_count = len(rest_list)
-f_count = len(patch1)
-g_count = len(opp_site_list)
+f_count = len(opp_site_list) #pos charge
+g_count = len(patch1) #neg charge
 
 
 for i in range(1,e_count+1,1):
@@ -499,8 +499,8 @@ print "Substrate atoms \t "+str(S_count)
 print "poly atoms Z \t\t "+str(Z_count)
 print "poly atoms P \t\t "+str(P_count)
 print "poly atoms N \t\t "+str(N_count)
-print "pos atoms cat \t "+str(p_count)
-print "neg atoms cat \t "+str(n_count)
+print "pos atoms ctr \t "+str(p_count)
+print "neg atoms ctr \t "+str(n_count)
 print "pos atoms salt_1 \t "+str(a_count)
 print "neg atoms salt_1 \t "+str(b_count)
 print "pos atoms salt_2 \t "+str(c_count)
@@ -541,6 +541,10 @@ if f_count > 0:
     atom_typ_list.append('f')
 if g_count > 0:
     atom_typ_list.append('g')
+
+print "Number of Neutral Patchy beads: "+str(e_count)
+print "Number of Positive Patchy beads: "+str(f_count)
+print "Number of Negative Patchy beads: "+str(g_count)
 
 num_atom_type = len(atom_typ_list)
 num_bond_type = 2 #one type of bond in brush, one types of bond in icosahedron
@@ -603,13 +607,13 @@ for item in atom_typ_list:
         LJ_dict[item] = input_param['patch_Z_LJ']
         m_dict[item] = input_param['patch_Z_mass']
     elif item == 'f':
-        chg_dict[item] = input_param['patch_N_chg']
-        LJ_dict[item] = input_param['patch_N_LJ']
-        m_dict[item] = input_param['patch_N_mass']
-    elif item == 'g':
         chg_dict[item] = input_param['patch_P_chg']
         LJ_dict[item] = input_param['patch_P_LJ']
         m_dict[item] = input_param['patch_P_mass']
+    elif item == 'g':
+        chg_dict[item] = input_param['patch_N_chg']
+        LJ_dict[item] = input_param['patch_N_LJ']
+        m_dict[item] = input_param['patch_N_mass']
 
 #create angle dictionary                                                                                                               
 angle_coeff_dict = {}
