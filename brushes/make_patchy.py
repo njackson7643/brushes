@@ -258,8 +258,8 @@ num_opp_sites = num_patch_sites + tot_chg
 
 #Create number of counterions needed for the patchy particle and add them to the counterion and salt list
 
-patch_n_count = num_patch_sites
-patch_p_count = num_opp_sites
+patch_p_count = num_patch_sites
+patch_n_count = num_opp_sites
 
 print str(len(patch1))+" negative sites identified in the patch"
 print "Adding "+str(num_opp_sites)+" positive sites randomly to the particle"
@@ -278,8 +278,8 @@ a_count = 0
 b_count = 0
 c_count = 0
 d_count = 0
-p_ctr_list = ['p'] * (N_count+patch_n_count)
-n_ctr_list = ['n'] * (P_count+patch_p_count)
+p_ctr_list = ['p'] * (N_count+patch_p_count)
+n_ctr_list = ['n'] * (P_count+patch_n_count)
 Sp_list_1 = ['a'] * tot_salt_cat_1
 Sn_list_1 = ['b'] * tot_salt_ani_1
 Sp_list_2 = ['c'] * tot_salt_cat_2
